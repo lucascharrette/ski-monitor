@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Ski Monitor Control</title>
     <style>
-        body { font-family: -apple-system, system-ui, sans-serif; background: #f2f2f7; color: #1c1c1e; padding: 20px; max-width: 600px; margin: 0 auto; padding-bottom: 140px; }
+        body { font-family: -apple-system, system-ui, sans-serif; background: #f2f2f7; color: #1c1c1e; padding: 20px; max-width: 600px; margin: 0 auto; padding-bottom: 160px; }
 
         /* HEADER */
         .header { background: linear-gradient(135deg, #007aff, #005ecb); color: white; padding: 20px; border-radius: 20px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3); }
@@ -50,13 +50,27 @@
         .section-title { font-weight: 800; color: #007aff; margin-top: 25px; margin-bottom: 5px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center;}
 
         /* BOTTOM SAVE BAR */
-        .btn-container { position: fixed; bottom: 0; left: 0; width: 100%; background: white; padding: 15px; box-shadow: 0 -4px 20px rgba(0,0,0,0.1); z-index: 1000; box-sizing: border-box; }
-        .btn-save { width: 100%; padding: 16px; background: #007aff; color: white; border: none; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; transition: background 0.2s; }
-        .btn-save:active { background: #005ecb; }
-        .btn-save:disabled { background: #8e8e93; cursor: not-allowed; }
+        /* BOTTOM SAVE BAR */
+        .btn-container {
+    position: fixed; bottom: 0; left: 0; width: 100%;
+    background: white; padding: 12px 15px;
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+    z-index: 1000; box-sizing: border-box;
+    display: flex; flex-direction: row; gap: 10px;
+}
 
-        /* SELECT ALL LINK */
-        .select-all-btn { color: #007aff; font-size: 14px; cursor: pointer; text-decoration: none; font-weight: 600; float: right; }
+.btn-save {
+    flex: 2; padding: 16px; background: #007aff; color: white;
+    border: none; border-radius: 12px; font-size: 17px; font-weight: bold;
+    cursor: pointer;
+}
+.btn-save:disabled { background: #8e8e93; opacity: 0.6; cursor: not-allowed; }
+
+.btn-notify {
+    flex: 1; padding: 16px; background: #34c759; color: white;
+    border: none; border-radius: 12px; font-size: 17px; font-weight: bold;
+    cursor: pointer;
+}
 
         .loading-text { text-align: center; color: #8e8e93; font-style: italic; padding: 20px; }
     </style>
@@ -104,8 +118,9 @@
     </div>
 
     <div class="btn-container">
-        <button class="btn-save" id="saveBtn" onclick="updateList()" disabled>✅ UPDATE & SAVE</button>
-    </div>
+    <button class="btn-save" id="saveBtn" onclick="updateList()" disabled>💾 UPDATE & SAVE</button>
+    <button class="btn-notify" id="notifyBtn" onclick="sendInstantNotification()">🔔 NOTIFY NOW</button>
+</div>
 
     <script>
         const SERVER_LISTENER_TOPIC = "lucas_ski_config_99";
@@ -187,6 +202,7 @@
 
                 liftListDiv.innerHTML = htmlContent;
                 saveBtn.disabled = false;
+                 // Add this!
 
             } catch (error) {
                 liftListDiv.innerHTML = '<div class="loading-text" style="color: red;">❌ Failed to load lifts. Network error.</div>';
@@ -263,22 +279,44 @@
         function changeCode() {
     if (!confirm("Generate a new code?")) return;
 
+    const oldID = document.getElementById("userSkiID").innerText;
+    // Tell the server to deactivate the old code
+    fetch(`https://ntfy.sh/${SERVER_LISTENER_TOPIC}`, {
+        method: 'POST',
+        body: `${oldID}|PAUSE|`,
+        headers: { "Title": "Config Update", "Priority": "1" }
+    });
+
     const chars = 'abcdefghjkmnpqrstuvwxyz23456789';
     let newID = '';
     for (let i = 0; i < 5; i++) {
         newID += chars.charAt(Math.floor(Math.random() * chars.length));
     }
-
     localStorage.setItem("mySkiID", newID);
     document.getElementById("userSkiID").innerText = newID;
-
-
 }
 
-        function copyCode() {
-            let code = document.getElementById("userSkiID").innerText;
-            navigator.clipboard.writeText(code).then(() => alert("Code copied!"));
+        function sendInstantNotification() {
+    const uniqueID = document.getElementById("userSkiID").innerText;
+
+    // Command format: USER_CODE|REPORT|
+    // Python will see 'REPORT' and pull the lift list from your JSON file
+    const payload = `${uniqueID}|REPORT|`;
+
+    fetch(`https://ntfy.sh/${SERVER_LISTENER_TOPIC}`, {
+        method: 'POST',
+        body: payload,
+        headers: {
+            "Title": "Status Request",
+            "Priority": "1"
         }
+    }).then(() => {
+        // Simple visual feedback so the user knows the tap worked
+        alert("🚀 Request sent! Python is checking your saved lifts now...");
+    }).catch(() => {
+        alert("❌ Network Error. Check your connection.");
+    });
+}
     </script>
 </body>
 </html>
