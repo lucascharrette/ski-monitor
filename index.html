@@ -150,7 +150,8 @@
     { id: 70, name: "Sugarbush" },
     { id: 80, name: "Crystal Mountain" },
     { id: 168, name: "Schweitzer" },
-    { id: 173, name: "Snow Valley" }
+    { id: 173, name: "Snow Valley" },
+    { id: "sugarloaf", name: "Sugarloaf", url: "https://www.sugarloaf.com/api/reportpal?resortName=sl&useReportPal=true" }
 ];
 
         window.onload = () => {
@@ -177,49 +178,70 @@
         };
 
         async function fetchLifts() {
-            const resortId = document.getElementById("resortSelect").value;
-            const liftListDiv = document.getElementById("liftList");
-            const saveBtn = document.getElementById("saveBtn");
+    const resortSelect = document.getElementById("resortSelect");
+    const resortId = resortSelect.value;
+    const selectedResort = resorts.find(r => String(r.id) === String(resortId));
+    const liftListDiv = document.getElementById("liftList");
+    const saveBtn = document.getElementById("saveBtn");
 
-            liftListDiv.innerHTML = '<div class="loading-text">🔄 Loading lifts from mountain...</div>';
-            saveBtn.disabled = true;
+    liftListDiv.innerHTML = '<div class="loading-text">🔄 Loading lifts from mountain...</div>';
+    saveBtn.disabled = true;
 
-            try {
-                const response = await fetch(`https://mtnpowder.com/feed?resortId=${resortId}`);
-                const data = await response.json();
+    try {
+        const url = selectedResort.url
+            ? selectedResort.url
+            : `https://mtnpowder.com/feed?resortId=${resortId}`;
 
-                let htmlContent = "";
+        const response = await fetch(url);
+        const data = await response.json();
 
-                if (data.MountainAreas && data.MountainAreas.length > 0) {
-                    let foundLifts = false;
+        let htmlContent = "";
+        let foundLifts = false;
 
-                    data.MountainAreas.forEach(area => {
-                        if (area.Lifts && area.Lifts.length > 0) {
-                            foundLifts = true;
-                            htmlContent += `<div class="section-title">${area.Name}</div>`;
-                            area.Lifts.forEach(lift => {
-                                htmlContent += `
-                                    <div class="lift-item">
-                                        <input type="checkbox" value="${lift.Name}">
-                                        <label>${lift.Name}</label>
-                                    </div>`;
-                            });
-                        }
+        // Sugarloaf format
+        if (data.facilities && data.facilities.areas) {
+            data.facilities.areas.area.forEach(area => {
+                const lifts = area.lifts?.lift;
+                if (lifts && lifts.length > 0) {
+                    foundLifts = true;
+                    htmlContent += `<div class="section-title">${area.name}</div>`;
+                    lifts.forEach(lift => {
+                        htmlContent += `
+                            <div class="lift-item">
+                                <input type="checkbox" value="${lift.name}">
+                                <label>${lift.name} <span style="color:#8e8e93;font-size:13px;">(${lift.status})</span></label>
+                            </div>`;
                     });
-
-                    if (!foundLifts) { htmlContent = '<div class="loading-text">⚠️ No active lifts currently reported for this resort.</div>'; }
-                } else {
-                    htmlContent = '<div class="loading-text">⚠️ No lift data found for this resort.</div>';
                 }
+            });
 
-                liftListDiv.innerHTML = htmlContent;
-                saveBtn.disabled = false;
-                 // Add this!
-
-            } catch (error) {
-                liftListDiv.innerHTML = '<div class="loading-text" style="color: red;">❌ Failed to load lifts. Network error.</div>';
-            }
+        // mtnpowder format
+        } else if (data.MountainAreas && data.MountainAreas.length > 0) {
+            data.MountainAreas.forEach(area => {
+                if (area.Lifts && area.Lifts.length > 0) {
+                    foundLifts = true;
+                    htmlContent += `<div class="section-title">${area.Name}</div>`;
+                    area.Lifts.forEach(lift => {
+                        htmlContent += `
+                            <div class="lift-item">
+                                <input type="checkbox" value="${lift.Name}">
+                                <label>${lift.Name}</label>
+                            </div>`;
+                    });
+                }
+            });
         }
+
+        liftListDiv.innerHTML = foundLifts
+            ? htmlContent
+            : '<div class="loading-text">⚠️ No lift data found for this resort.</div>';
+
+        saveBtn.disabled = false;
+
+    } catch (error) {
+        liftListDiv.innerHTML = '<div class="loading-text" style="color:red;">❌ Failed to load lifts. Network error.</div>';
+    }
+}
 
         let allSelected = false;
         function toggleSelectAll() {
