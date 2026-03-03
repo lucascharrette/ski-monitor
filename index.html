@@ -242,13 +242,9 @@
 
     if (sendToServer) {
         const payload = `${uniqueID}|${active ? "RESUME" : "PAUSE"}|`;
-        if (isPaused) {
-            alert("Notifications Paused")
-        } else {
-            alert("Notifications Resumed")
-        }
         
-        //console.log("Sending to ntfy:", payload); // ADD THIS
+        
+        console.log("Sending to ntfy:", payload); // ADD THIS
         sendToCloud(payload);
     }
     
@@ -256,25 +252,21 @@
 
 // Call on load to set initial visual state
    
-        function updateList() {
-            const uniqueID = document.getElementById("userSkiID").innerText;
-            const resortId = document.getElementById("resortSelect").value;
-            let selected = [];
+       function updateList() {
+    const uniqueID = document.getElementById("userSkiID").innerText;
+    const resortId = document.getElementById("resortSelect").value;
+    let selected = [];
 
-            document.querySelectorAll('#liftList input[type=checkbox]:checked').forEach(box => {
-                selected.push(box.value);
-            });
+    document.querySelectorAll('#liftList input[type=checkbox]:checked').forEach(box => {
+        selected.push(box.value);
+    });
 
-            if (!resortId) { alert("⚠️ Please select a mountain first."); return; }
-            if (selected.length === 0) { alert("⚠️ Please select at least one lift."); return; }
+    if (!resortId) { alert("⚠️ Please select a mountain first."); return; }
+    if (selected.length === 0) { alert("⚠️ Please select at least one lift."); return; }
 
-            isPaused = false;
-            setAlertState(true, false);
-
-            // Payload format: ID | COMMAND | RESORT_ID | LIFTS
-            let payload = `${uniqueID}|UPDATE|${resortId}|${selected.join(',')}`;
-            sendToCloud(payload);
-        }
+    let payload = `${uniqueID}|UPDATE|${resortId}|${selected.join(',')}`;
+    sendToCloud(payload);
+}
 
         function sendToCloud(payload) {
             let btn = document.getElementById("saveBtn");
