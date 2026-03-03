@@ -212,8 +212,13 @@
                 if (selectedResort.id === "jacksonhole") {
                     data = await fetchWithProxy("https://jacksonhole-prod.zaneray.com/api/all.json");
                 } else if (selectedResort.id === "snowbird") {
-                    data = await fetchWithProxy("https://api.snowbird.com/api/v1/dor/drupal/lifts");
-                } else if (selectedResort.url) {
+    try {
+        const response = await fetch("https://api.snowbird.com/api/v1/dor/drupal/lifts");
+        data = await response.json();
+    } catch (e) {
+        data = await fetchWithProxy("https://api.snowbird.com/api/v1/dor/drupal/lifts");
+    }
+} else if (selectedResort.url) {
                     data = await fetchWithProxy(selectedResort.url);
                 } else {
                     const response = await fetch(`https://mtnpowder.com/feed?resortId=${resortId}`);
