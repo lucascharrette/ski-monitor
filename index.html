@@ -231,18 +231,20 @@
         let isPaused = false;
 
         function setAlertState(active, sendToServer = true) {
-            const uniqueID = document.getElementById("userSkiID").innerText;
-            isPaused = !active;
-        
-            localStorage.setItem("alertActive", active ? "true" : "false");
-        
-            document.getElementById("btnResume").style.opacity = active ? "1" : "0.35";
-            document.getElementById("btnPause").style.opacity = active ? "0.35" : "1";
-        
-            if (sendToServer) {
-                sendToCloud(`${uniqueID}|${active ? "RESUME" : "PAUSE"}|`);
-            }
-        }
+    const uniqueID = document.getElementById("userSkiID").innerText;
+    isPaused = !active;
+
+    localStorage.setItem("alertActive", active ? "true" : "false");
+
+    document.getElementById("btnResume").style.opacity = active ? "1" : "0.35";
+    document.getElementById("btnPause").style.opacity = active ? "0.35" : "1";
+
+    if (sendToServer) {
+        const payload = `${uniqueID}|${active ? "RESUME" : "PAUSE"}|`;
+        console.log("Sending to ntfy:", payload); // ADD THIS
+        sendToCloud(payload);
+    }
+}
 
 // Call on load to set initial visual state
    
