@@ -152,7 +152,8 @@
     { id: 168, name: "Schweitzer" },
     { id: 173, name: "Snow Valley" },
     { id: "sugarloaf", name: "Sugarloaf", url: "https://www.sugarloaf.com/api/reportpal?resortName=sl&useReportPal=true" },
-    { id: "jacksonhole", name: "Jackson Hole" }
+    { id: "jacksonhole", name: "Jackson Hole" },
+    { id: "snowbird", name: "Snowbird" }
 ];
 
         window.onload = () => {
@@ -195,6 +196,10 @@
             const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent("https://jacksonhole-prod.zaneray.com/api/all.json")}`;
             const response = await fetch(proxyUrl);
             data = await response.json();
+        } else if (selectedResort.id === "snowbird") {
+            const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent("https://api.snowbird.com/api/v1/dor/drupal/lifts")}`;
+            const response = await fetch(proxyUrl);
+            data = await response.json();
         } else {
             const url = selectedResort.url
                 ? `https://corsproxy.io/?url=${encodeURIComponent(selectedResort.url)}`
@@ -220,6 +225,21 @@
                         </div>`;
                 });
             }
+
+        } else if (selectedResort.id === "snowbird") {
+            const liftList = Array.isArray(data) ? data : [];
+            if (liftList.length > 0) {
+                foundLifts = true;
+                htmlContent += `<div class="section-title">Snowbird</div>`;
+                liftList.forEach(lift => {
+                    htmlContent += `
+                        <div class="lift-item">
+                            <input type="checkbox" value="${lift.name}">
+                            <label>${lift.name}</label>
+                        </div>`;
+                });
+            }
+
         } else if (data.facilities && data.facilities.areas) {
             data.facilities.areas.area.forEach(area => {
                 const lifts = area.lifts?.lift;
@@ -235,6 +255,7 @@
                     });
                 }
             });
+
         } else if (data.MountainAreas && data.MountainAreas.length > 0) {
             data.MountainAreas.forEach(area => {
                 if (area.Lifts && area.Lifts.length > 0) {
