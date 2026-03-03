@@ -279,11 +279,15 @@
                 body: payload,
                 headers: { "Title": "Config Update", "Priority": "1" }
             }).then(() => {
-                if (payload.includes("UPDATE")) {
-                    alert(`✅ Saved! \n\nYou are watching ${payload.split('|')[3].split(',').length} lifts.`);
-                    btn.innerText = "✅ UPDATE & SAVE";
-                }
-            }).catch(err => {
+    if (payload.includes("UPDATE")) {
+        alert(`✅ Saved! \n\nYou are watching ${payload.split('|')[3].split(',').length} lifts.`);
+        btn.innerText = "💾 UPDATE & SAVE";
+        
+        // Re-apply the pause state after save — don't let UPDATE reset it
+        const savedState = localStorage.getItem("alertActive");
+        setAlertState(savedState === "true", false);
+    }
+}).catch(err => {
                 alert("❌ Network Error");
                 btn.innerText = originalText;
             });
