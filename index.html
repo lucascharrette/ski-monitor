@@ -189,8 +189,8 @@
 
     try {
         const url = selectedResort.url
-            ? selectedResort.url
-            : `https://mtnpowder.com/feed?resortId=${resortId}`;
+    ? `https://corsproxy.io/?url=${encodeURIComponent(selectedResort.url)}`
+    : `https://mtnpowder.com/feed?resortId=${resortId}`;
 
         const response = await fetch(url);
         const data = await response.json();
