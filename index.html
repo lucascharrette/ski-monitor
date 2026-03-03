@@ -189,18 +189,41 @@
     saveBtn.disabled = true;
 
     try {
-        const url = selectedResort.url
-    ? `https://corsproxy.io/?url=${encodeURIComponent(selectedResort.url)}`
-    : `https://mtnpowder.com/feed?resortId=${resortId}`;
+        let data;
 
-        const response = await fetch(url);
-        const data = await response.json();
+        if (selectedResort.id === "jacksonhole") {
+            const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent("https://jacksonhole-prod.zaneray.com/api/all.json")}`;
+            const response = await fetch(proxyUrl);
+            data = await response.json();
+        } else {
+            const url = selectedResort.url
+                ? `https://corsproxy.io/?url=${encodeURIComponent(selectedResort.url)}`
+                : `https://mtnpowder.com/feed?resortId=${resortId}`;
+            const response = await fetch(url);
+            data = await response.json();
+        }
 
         let htmlContent = "";
         let foundLifts = false;
 
+        // Jackson Hole format
+        if (selectedResort.id === "jacksonhole") {
+            const lifts = data.lifts || {};
+            const liftList = Object.values(lifts);
+            if (liftList.length > 0) {
+                foundLifts = true;
+                htmlContent += `<div class="section-title">Jackson Hole</div>`;
+                liftList.forEach(lift => {
+                    htmlContent += `
+                        <div class="lift-item">
+                            <input type="checkbox" value="${lift.name}">
+                            <label>${lift.name}</label>
+                        </div>`;
+                });
+            }
+
         // Sugarloaf format
-        if (data.facilities && data.facilities.areas) {
+        } else if (data.facilities && data.facilities.areas) {
             data.facilities.areas.area.forEach(area => {
                 const lifts = area.lifts?.lift;
                 if (lifts && lifts.length > 0) {
@@ -231,12 +254,6 @@
                     });
                 }
             });
-        } else if (selectedResort.id === "jacksonhole") {
-    const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent("https://jacksonhole-prod.zaneray.com/api/all.json")}`;
-    const response = await fetch(proxyUrl);
-    const data = await response.json();
-    const lifts = data.lifts || {};
-    liftNames = Object.values(lifts).map(lift => lift.name);
         }
 
         liftListDiv.innerHTML = foundLifts
@@ -247,6 +264,7 @@
 
     } catch (error) {
         liftListDiv.innerHTML = '<div class="loading-text" style="color:red;">❌ Failed to load lifts. Network error.</div>';
+        console.error(error);
     }
 }
 
