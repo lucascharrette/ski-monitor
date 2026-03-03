@@ -180,21 +180,21 @@
         };
 
         async function fetchWithProxy(url) {
-            const proxies = [
-                `https://corsproxy.io/?url=${encodeURIComponent(url)}`,
-                `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
-                `https://thingproxy.freeboard.io/fetch/${url}`
-            ];
-            for (const proxy of proxies) {
-                try {
-                    const response = await fetch(proxy, { signal: AbortSignal.timeout(5000) });
-                    if (response.ok) return await response.json();
-                } catch (e) {
-                    continue;
-                }
-            }
-            throw new Error("All proxies failed");
+    const proxies = [
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(url)}`,
+        `https://thingproxy.freeboard.io/fetch/${url}`,
+        `https://proxy.cors.sh/${url}`
+    ];
+    for (const proxy of proxies) {
+        try {
+            const response = await fetch(proxy, { signal: AbortSignal.timeout(5000) });
+            if (response.ok) return await response.json();
+        } catch (e) {
+            continue;
         }
+    }
+    throw new Error("All proxies failed");
+}
 
         async function fetchLifts() {
             const resortSelect = document.getElementById("resortSelect");
