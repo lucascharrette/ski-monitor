@@ -242,7 +242,7 @@
 
     if (sendToServer) {
         const payload = `${uniqueID}|${active ? "RESUME" : "PAUSE"}|`;
-        alert("Notifications: ", payload);
+       
         //console.log("Sending to ntfy:", payload); // ADD THIS
         sendToCloud(payload);
     }
