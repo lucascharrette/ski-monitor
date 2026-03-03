@@ -193,15 +193,17 @@
         let data;
 
         if (selectedResort.id === "jacksonhole") {
-    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent("https://jacksonhole-prod.zaneray.com/api/all.json")}`;
-
-} else if (selectedResort.id === "snowbird") {
-    const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent("https://api.snowbird.com/api/v1/dor/drupal/lifts")}`;
-
-} else {
-    const url = selectedResort.url
-        ? `https://api.allorigins.win/raw?url=${encodeURIComponent(selectedResort.url)}`
-        : `https://mtnpowder.com/feed?resortId=${resortId}`;
+            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent("https://jacksonhole-prod.zaneray.com/api/all.json")}`;
+            const response = await fetch(proxyUrl);
+            data = await response.json();
+        } else if (selectedResort.id === "snowbird") {
+            const proxyUrl = `https://api.allorigins.win/raw?url=${encodeURIComponent("https://api.snowbird.com/api/v1/dor/drupal/lifts")}`;
+            const response = await fetch(proxyUrl);
+            data = await response.json();
+        } else {
+            const url = selectedResort.url
+                ? `https://api.allorigins.win/raw?url=${encodeURIComponent(selectedResort.url)}`
+                : `https://mtnpowder.com/feed?resortId=${resortId}`;
             const response = await fetch(url);
             data = await response.json();
         }
