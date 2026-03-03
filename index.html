@@ -130,7 +130,7 @@
 </div>
 
     <script>
-        console.log("asdf")
+        
         const SERVER_LISTENER_TOPIC = "lucas_ski_config_99";
 
         const resorts = [
@@ -242,9 +242,11 @@
 
     if (sendToServer) {
         const payload = `${uniqueID}|${active ? "RESUME" : "PAUSE"}|`;
-        console.log("Sending to ntfy:", payload); // ADD THIS
+        alert("Notifications: ", payload);
+        //console.log("Sending to ntfy:", payload); // ADD THIS
         sendToCloud(payload);
     }
+    
 }
 
 // Call on load to set initial visual state
