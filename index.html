@@ -206,7 +206,6 @@
         let htmlContent = "";
         let foundLifts = false;
 
-        // Jackson Hole format
         if (selectedResort.id === "jacksonhole") {
             const lifts = data.lifts || {};
             const liftList = Object.values(lifts);
@@ -221,8 +220,6 @@
                         </div>`;
                 });
             }
-
-        // Sugarloaf format
         } else if (data.facilities && data.facilities.areas) {
             data.facilities.areas.area.forEach(area => {
                 const lifts = area.lifts?.lift;
@@ -238,8 +235,6 @@
                     });
                 }
             });
-
-        // mtnpowder format
         } else if (data.MountainAreas && data.MountainAreas.length > 0) {
             data.MountainAreas.forEach(area => {
                 if (area.Lifts && area.Lifts.length > 0) {
