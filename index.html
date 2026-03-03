@@ -151,7 +151,8 @@
     { id: 80, name: "Crystal Mountain" },
     { id: 168, name: "Schweitzer" },
     { id: 173, name: "Snow Valley" },
-    { id: "sugarloaf", name: "Sugarloaf", url: "https://www.sugarloaf.com/api/reportpal?resortName=sl&useReportPal=true" }
+    { id: "sugarloaf", name: "Sugarloaf", url: "https://www.sugarloaf.com/api/reportpal?resortName=sl&useReportPal=true" },
+    { id: "jacksonhole", name: "Jackson Hole" }
 ];
 
         window.onload = () => {
@@ -230,6 +231,12 @@
                     });
                 }
             });
+        } else if (selectedResort.id === "jacksonhole") {
+    const proxyUrl = `https://corsproxy.io/?url=${encodeURIComponent("https://jacksonhole-prod.zaneray.com/api/all.json")}`;
+    const response = await fetch(proxyUrl);
+    const data = await response.json();
+    const lifts = data.lifts || {};
+    liftNames = Object.values(lifts).map(lift => lift.name);
         }
 
         liftListDiv.innerHTML = foundLifts
