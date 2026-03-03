@@ -83,10 +83,17 @@
     </div>
 
     <div class="card">
-        <label class="input-label">Status</label>
-        <button id="pauseBtn" class="status-btn status-active" onclick="togglePause()">
-            ✅ ALERTS ACTIVE (Tap to Pause)
+    <label class="input-label">Alert Status</label>
+    <div style="display:flex; gap:10px; margin-bottom:15px;">
+        <button id="btnResume" onclick="setAlertState(true)"
+            style="flex:1; padding:14px; border-radius:12px; border:2px solid #2e7d32; background:#e8f5e9; color:#2e7d32; font-size:15px; font-weight:700; cursor:pointer;">
+            ✅ Active
         </button>
+        <button id="btnPause" onclick="setAlertState(false)"
+            style="flex:1; padding:14px; border-radius:12px; border:2px solid #c62828; background:#ffebee; color:#c62828; font-size:15px; font-weight:700; cursor:pointer;">
+            ⏸️ Paused
+        </button>
+    </div>
 
         <label class="input-label">Your Code (Tap to Copy)</label>
         <div class="id-box" id="userSkiID" onclick="copyCode()">...</div>
@@ -162,6 +169,10 @@
                 opt.innerText = r.name;
                 select.appendChild(opt);
             });
+
+
+            const savedState = localStorage.getItem("alertActive");
+            setAlertState(savedState === null ? true : savedState === "true", false);
         };
 
         async function fetchLifts() {
@@ -218,22 +229,23 @@
         }
 
         let isPaused = false;
-        function togglePause() {
-            const btn = document.getElementById("pauseBtn");
-            const uniqueID = document.getElementById("userSkiID").innerText;
-            isPaused = !isPaused;
 
-            if (isPaused) {
-                btn.className = "status-btn status-paused";
-                btn.innerText = "⏸️ ALERTS PAUSED (Tap to Resume)";
-                sendToCloud(`${uniqueID}|PAUSE|`);
-            } else {
-                btn.className = "status-btn status-active";
-                btn.innerText = "✅ ALERTS ACTIVE (Tap to Pause)";
-                sendToCloud(`${uniqueID}|RESUME|`);
+        function setAlertState(active, sendToServer = true) {
+            const uniqueID = document.getElementById("userSkiID").innerText;
+            isPaused = !active;
+        
+            localStorage.setItem("alertActive", active ? "true" : "false");
+        
+            document.getElementById("btnResume").style.opacity = active ? "1" : "0.35";
+            document.getElementById("btnPause").style.opacity = active ? "0.35" : "1";
+        
+            if (sendToServer) {
+                sendToCloud(`${uniqueID}|${active ? "RESUME" : "PAUSE"}|`);
             }
         }
 
+// Call on load to set initial visual state
+        window.addEventListener("load", () => { setAlertState(true); });
         function updateList() {
             const uniqueID = document.getElementById("userSkiID").innerText;
             const resortId = document.getElementById("resortSelect").value;
