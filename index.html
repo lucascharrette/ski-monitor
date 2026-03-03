@@ -245,7 +245,7 @@
         }
 
 // Call on load to set initial visual state
-        window.addEventListener("load", () => { setAlertState(true); });
+   
         function updateList() {
             const uniqueID = document.getElementById("userSkiID").innerText;
             const resortId = document.getElementById("resortSelect").value;
@@ -259,9 +259,7 @@
             if (selected.length === 0) { alert("⚠️ Please select at least one lift."); return; }
 
             isPaused = false;
-            const btn = document.getElementById("pauseBtn");
-            btn.className = "status-btn status-active";
-            btn.innerText = "✅ ALERTS ACTIVE (Tap to Pause)";
+            setAlertState(true, false);
 
             // Payload format: ID | COMMAND | RESORT_ID | LIFTS
             let payload = `${uniqueID}|UPDATE|${resortId}|${selected.join(',')}`;
