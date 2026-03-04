@@ -53,6 +53,26 @@
         }
         .loading-text { text-align: center; color: #8e8e93; font-style: italic; padding: 20px; }
         .select-all-btn { font-size: 13px; color: #007aff; font-weight: 600; cursor: pointer; }
+
+        /* --- WATCH LIST STYLES --- */
+        .watch-list { margin-bottom: 10px; }
+        .watch-item {
+            background: #f2f2f7; border-radius: 12px; padding: 14px;
+            margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .watch-item-info { flex: 1; }
+        .watch-item-name { font-weight: 700; font-size: 15px; color: #1c1c1e; }
+        .watch-item-lifts { font-size: 12px; color: #8e8e93; margin-top: 3px; }
+        .watch-item-remove {
+            background: #ffebee; border: none; color: #c62828; border-radius: 8px;
+            padding: 8px 12px; font-size: 13px; font-weight: 700; cursor: pointer;
+        }
+        .add-resort-btn {
+            width: 100%; padding: 14px; border-radius: 12px; border: 2px dashed #007aff;
+            background: #f0f6ff; color: #007aff; font-size: 15px; font-weight: 700;
+            cursor: pointer; margin-top: 5px;
+        }
+        .add-resort-form { margin-top: 15px; border-top: 1px solid #f2f2f7; padding-top: 15px; display: none; }
     </style>
 </head>
 <body>
@@ -84,29 +104,46 @@
         </p>
     </div>
 
+    <!-- WATCHING CARD -->
     <div class="card">
-        <label class="input-label">1. Choose Mountain</label>
-        <div class="select-container">
-            <select id="resortSelect" onchange="fetchLifts()">
-                <option value="" disabled selected>Tap to select a resort...</option>
-            </select>
+        <label class="input-label">🏔️ Watching</label>
+        <div class="watch-list" id="watchList">
+            <div class="loading-text">No resorts added yet.</div>
         </div>
-        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px; margin-top:10px;">
-            <label class="input-label" style="margin:0;">2. Select Lifts</label>
-            <span class="select-all-btn" onclick="toggleSelectAll()">Select All</span>
-        </div>
-        <div id="liftList">
-            <div class="loading-text">Please select a mountain above.</div>
+        <button class="add-resort-btn" onclick="toggleAddForm()">＋ Add Resort</button>
+
+        <!-- ADD RESORT FORM -->
+        <div class="add-resort-form" id="addResortForm">
+            <label class="input-label">Choose Mountain</label>
+            <div class="select-container">
+                <select id="resortSelect" onchange="fetchLifts()">
+                    <option value="" disabled selected>Tap to select a resort...</option>
+                </select>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <label class="input-label" style="margin:0;">Select Lifts</label>
+                <span class="select-all-btn" onclick="toggleSelectAll()">Select All</span>
+            </div>
+            <div id="liftList">
+                <div class="loading-text">Please select a mountain above.</div>
+            </div>
+            <button id="addToWatchBtn" onclick="addToWatchList()" disabled
+                style="width:100%; padding:14px; margin-top:15px; border-radius:12px; border:none; background:#007aff; color:white; font-size:16px; font-weight:700; cursor:pointer; opacity:0.5;">
+                ＋ Add to Watch List
+            </button>
         </div>
     </div>
 
     <div class="btn-container">
-        <button class="btn-save" id="saveBtn" onclick="updateList()" disabled>💾 UPDATE & SAVE</button>
+        <button class="btn-save" id="saveBtn" onclick="saveAll()">💾 SAVE ALL</button>
         <button class="btn-notify" id="notifyBtn" onclick="sendInstantNotification()">🔔 NOTIFY NOW</button>
     </div>
 
     <script>
         const SERVER_LISTENER_TOPIC = "lucas_ski_config_99";
+
+        // watchList is an array of { resortId, resortName, lifts[] }
+        let watchList = [];
 
         const resorts = [
             { id: "abasin", name: "Arapaho Basin", areas: [{ name: "All Lifts", lifts: ["Beavers", "Black Mountain Express Lift", "Lazy J Tow", "Lenawee Express Lift", "Molly Hogan Lift", "Molly's Magic Carpet", "Pallavicini Lift", "Pika Place Carpet", "Zuma Lift"] }] },
@@ -249,7 +286,6 @@
             { id: "80", name: "Crystal Mountain", areas: [] },
         ];
 
-        // Sort resort list alphabetically
         resorts.sort((a, b) => a.name.localeCompare(b.name));
 
         window.onload = () => {
@@ -270,9 +306,51 @@
                 select.appendChild(opt);
             });
 
+            // Load saved watch list from localStorage
+            const saved = localStorage.getItem("watchList");
+            if (saved) {
+                try { watchList = JSON.parse(saved); } catch(e) { watchList = []; }
+            }
+            renderWatchList();
+
             const savedState = localStorage.getItem("alertActive");
             setAlertState(savedState === null ? true : savedState === "true", false);
         };
+
+        function renderWatchList() {
+            const container = document.getElementById("watchList");
+            if (watchList.length === 0) {
+                container.innerHTML = '<div class="loading-text">No resorts added yet.</div>';
+                return;
+            }
+            container.innerHTML = watchList.map((w, i) => `
+                <div class="watch-item">
+                    <div class="watch-item-info">
+                        <div class="watch-item-name">🏔️ ${w.resortName}</div>
+                        <div class="watch-item-lifts">${w.lifts.length} lift${w.lifts.length !== 1 ? 's' : ''} watched</div>
+                    </div>
+                    <button class="watch-item-remove" onclick="removeFromWatchList(${i})">✕ Remove</button>
+                </div>
+            `).join('');
+        }
+
+        function toggleAddForm() {
+            const form = document.getElementById("addResortForm");
+            const isVisible = form.style.display === 'block';
+            form.style.display = isVisible ? 'none' : 'block';
+            if (!isVisible) {
+                document.getElementById("resortSelect").value = "";
+                document.getElementById("liftList").innerHTML = '<div class="loading-text">Please select a mountain above.</div>';
+                document.getElementById("addToWatchBtn").disabled = true;
+                document.getElementById("addToWatchBtn").style.opacity = "0.5";
+            }
+        }
+
+        function removeFromWatchList(index) {
+            watchList.splice(index, 1);
+            localStorage.setItem("watchList", JSON.stringify(watchList));
+            renderWatchList();
+        }
 
         function copyCode() {
             const code = document.getElementById("userSkiID").innerText;
@@ -288,12 +366,12 @@
             const resortId = resortSelect.value;
             const selectedResort = resorts.find(r => String(r.id) === String(resortId));
             const liftListDiv = document.getElementById("liftList");
-            const saveBtn = document.getElementById("saveBtn");
+            const addBtn = document.getElementById("addToWatchBtn");
 
             liftListDiv.innerHTML = '<div class="loading-text">🔄 Loading lifts...</div>';
-            saveBtn.disabled = true;
+            addBtn.disabled = true;
+            addBtn.style.opacity = "0.5";
 
-            // Hardcoded resorts with areas
             if (selectedResort.areas && selectedResort.areas.length > 0) {
                 let htmlContent = "";
                 selectedResort.areas.forEach(area => {
@@ -307,18 +385,16 @@
                     });
                 });
                 liftListDiv.innerHTML = htmlContent;
-                saveBtn.disabled = false;
+                addBtn.disabled = false;
+                addBtn.style.opacity = "1";
                 return;
             }
 
-            // mtnpowder resorts (numeric IDs with no areas)
             try {
                 const response = await fetch(`https://mtnpowder.com/feed?resortId=${resortId}`);
                 const data = await response.json();
-
                 let htmlContent = "";
                 let foundLifts = false;
-
                 if (data.MountainAreas && data.MountainAreas.length > 0) {
                     data.MountainAreas.forEach(area => {
                         if (area.Lifts && area.Lifts.length > 0) {
@@ -335,17 +411,36 @@
                         }
                     });
                 }
-
-                liftListDiv.innerHTML = foundLifts
-                    ? htmlContent
-                    : '<div class="loading-text">⚠️ No lift data found for this resort.</div>';
-
-                saveBtn.disabled = false;
-
+                liftListDiv.innerHTML = foundLifts ? htmlContent : '<div class="loading-text">⚠️ No lift data found.</div>';
+                addBtn.disabled = false;
+                addBtn.style.opacity = "1";
             } catch (error) {
-                liftListDiv.innerHTML = '<div class="loading-text" style="color:red;">❌ Failed to load lifts. Network error.</div>';
-                console.error(error);
+                liftListDiv.innerHTML = '<div class="loading-text" style="color:red;">❌ Failed to load lifts.</div>';
             }
+        }
+
+        function addToWatchList() {
+            const resortId = document.getElementById("resortSelect").value;
+            const selectedResort = resorts.find(r => String(r.id) === String(resortId));
+            if (!resortId || !selectedResort) { alert("⚠️ Please select a mountain first."); return; }
+
+            let selected = [];
+            document.querySelectorAll('#liftList input[type=checkbox]:checked').forEach(box => {
+                selected.push(box.value);
+            });
+            if (selected.length === 0) { alert("⚠️ Please select at least one lift."); return; }
+
+            // Check if already watching this resort
+            const existing = watchList.findIndex(w => String(w.resortId) === String(resortId));
+            if (existing >= 0) {
+                if (!confirm(`You're already watching ${selectedResort.name}. Replace it?`)) return;
+                watchList.splice(existing, 1);
+            }
+
+            watchList.push({ resortId: resortId, resortName: selectedResort.name, lifts: selected });
+            localStorage.setItem("watchList", JSON.stringify(watchList));
+            renderWatchList();
+            toggleAddForm();
         }
 
         let allSelected = false;
@@ -369,69 +464,59 @@
             }
         }
 
-        function updateList() {
+        function saveAll() {
             const uniqueID = document.getElementById("userSkiID").innerText;
-            const resortId = document.getElementById("resortSelect").value;
-            let selected = [];
-            document.querySelectorAll('#liftList input[type=checkbox]:checked').forEach(box => {
-                selected.push(box.value);
-            });
-            if (!resortId) { alert("⚠️ Please select a mountain first."); return; }
-            if (selected.length === 0) { alert("⚠️ Please select at least one lift."); return; }
-            let payload = `${uniqueID}|UPDATE|${resortId}|${selected.join('~~')}`;
-            sendToCloud(payload);
-        }
+            if (watchList.length === 0) { alert("⚠️ Please add at least one resort first."); return; }
 
-        function sendToCloud(payload) {
-            let btn = document.getElementById("saveBtn");
-            let originalText = btn.innerText;
-            if (payload.includes("UPDATE")) { btn.innerText = "⏳ Saving..."; }
+            // Format: usercode|MULTIUPDATE|resort1:lift1~~lift2~~lift3;;resort2:lift1~~lift2
+            const parts = watchList.map(w => `${w.resortId}:${w.lifts.join('~~')}`);
+            const payload = `${uniqueID}|MULTIUPDATE|${parts.join(';;')}`;
+
+            const btn = document.getElementById("saveBtn");
+            btn.innerText = "⏳ Saving...";
+
             fetch(`https://ntfy.sh/${SERVER_LISTENER_TOPIC}`, {
                 method: 'POST',
                 body: payload,
                 headers: { "Title": "Config Update", "Priority": "1" }
             }).then(() => {
-                if (payload.includes("UPDATE")) {
-                    alert(`✅ Saved! \n\nYou are watching ${payload.split('|')[3].split(',').length} lifts.`);
-                    btn.innerText = "💾 UPDATE & SAVE";
-                    const savedState = localStorage.getItem("alertActive");
-                    setAlertState(savedState === "true", false);
-                }
-            }).catch(err => {
+                const totalLifts = watchList.reduce((sum, w) => sum + w.lifts.length, 0);
+                alert(`✅ Saved!\n\nWatching ${watchList.length} resort${watchList.length !== 1 ? 's' : ''} and ${totalLifts} lifts.`);
+                btn.innerText = "💾 SAVE ALL";
+            }).catch(() => {
                 alert("❌ Network Error");
-                btn.innerText = originalText;
+                btn.innerText = "💾 SAVE ALL";
             });
+        }
+
+        function sendToCloud(payload) {
+            fetch(`https://ntfy.sh/${SERVER_LISTENER_TOPIC}`, {
+                method: 'POST',
+                body: payload,
+                headers: { "Title": "Config Update", "Priority": "1" }
+            }).catch(() => {});
         }
 
         function changeCode() {
             if (!confirm("Generate a new code?")) return;
             const oldID = document.getElementById("userSkiID").innerText;
-            fetch(`https://ntfy.sh/${SERVER_LISTENER_TOPIC}`, {
-                method: 'POST',
-                body: `${oldID}|PAUSE|`,
-                headers: { "Title": "Config Update", "Priority": "1" }
-            });
+            sendToCloud(`${oldID}|PAUSE|`);
             const chars = 'abcdefghjkmnpqrstuvwxyz23456789';
             let newID = '';
             for (let i = 0; i < 5; i++) {
                 newID += chars.charAt(Math.floor(Math.random() * chars.length));
             }
             localStorage.setItem("mySkiID", newID);
+            localStorage.removeItem("watchList");
+            watchList = [];
+            renderWatchList();
             document.getElementById("userSkiID").innerText = newID;
         }
 
         function sendInstantNotification() {
             const uniqueID = document.getElementById("userSkiID").innerText;
-            const payload = `${uniqueID}|REPORT|`;
-            fetch(`https://ntfy.sh/${SERVER_LISTENER_TOPIC}`, {
-                method: 'POST',
-                body: payload,
-                headers: { "Title": "Status Request", "Priority": "1" }
-            }).then(() => {
-                alert("🚀 Request sent! Python is checking your saved lifts now...");
-            }).catch(() => {
-                alert("❌ Network Error. Check your connection.");
-            });
+            sendToCloud(`${uniqueID}|REPORT|`);
+            alert("🚀 Request sent! Python is checking your saved lifts now...");
         }
     </script>
 </body>
