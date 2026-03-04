@@ -378,7 +378,7 @@
             });
             if (!resortId) { alert("⚠️ Please select a mountain first."); return; }
             if (selected.length === 0) { alert("⚠️ Please select at least one lift."); return; }
-            let payload = `${uniqueID}|UPDATE|${resortId}|${selected.join(',')}`;
+            let payload = `${uniqueID}|UPDATE|${resortId}|${selected.join('~~')}`;
             sendToCloud(payload);
         }
 
