@@ -342,6 +342,7 @@
                 document.getElementById("liftList").innerHTML = '<div class="loading-text">Please select a mountain above.</div>';
                 document.getElementById("addToWatchBtn").disabled = true;
                 document.getElementById("addToWatchBtn").style.opacity = "0.5";
+                resetSelectAll();
             }
         }
 
@@ -370,6 +371,7 @@
             liftListDiv.innerHTML = '<div class="loading-text">🔄 Loading lifts...</div>';
             addBtn.disabled = true;
             addBtn.style.opacity = "0.5";
+            resetSelectAll();
 
             if (selectedResort.areas && selectedResort.areas.length > 0) {
                 let htmlContent = "";
@@ -443,6 +445,10 @@
         }
 
         let allSelected = false;
+        function resetSelectAll() {
+            allSelected = false;
+            document.querySelector('.select-all-btn').innerText = "Select All";
+        }
         function toggleSelectAll() {
             const checkboxes = document.querySelectorAll('#liftList input[type="checkbox"]');
             allSelected = !allSelected;
