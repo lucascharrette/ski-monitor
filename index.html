@@ -126,81 +126,132 @@
             { id: 80, name: "Crystal Mountain" },
             { id: 168, name: "Schweitzer" },
             { id: 173, name: "Snow Valley" },
-            {
-                id: "sugarloaf", name: "Sugarloaf",
-                areas: [
-                    { name: "Base Area", lifts: ["Moose-calator", "Sawduster", "Snubber", "Skidway"] },
-                    { name: "Double Runner", lifts: ["Double Runner East", "Double Runner West"] },
-                    { name: "SuperQuad", lifts: ["SuperQuad", "CVA/Colby T-Bar"] },
-                    { name: "Skyline", lifts: ["Skyline", "#3 T-Bar/Bateau"] },
-                    { name: "Whiffletree", lifts: ["Whiffletree SuperQuad"] },
-                    { name: "King Pine", lifts: ["King Pine"] },
-                    { name: "Timberline", lifts: ["Timberline"] },
-                    { name: "West Mountain", lifts: ["Bucksaw Express", "West Mountain"] }
-                ]
-            },
-            {
-    id: "jacksonhole", name: "Jackson Hole",
-    areas: [
-        { name: "Lifts And Trams", lifts: ["Aerial Tram", "Bridger Gondola", "Sweetwater Gondola", "Teewinot Quad", "Apres Vous Quad", "Casper Quad", "Eagle's Rest Quad", "Marmot Double", "Moose Creek Quad", "Sublette Quad", "Teton Quad", "Thunder Quad", "Union Pass Quad"] }
-    ]
-},
-            {
-                id: "snowbird", name: "Snowbird",
-                areas: [
-                    { name: "Peruvian Gulch", lifts: ["Aerial Tram", "Peruvian", "Chickadee", "Chickadee Conveyor"] },
-                    { name: "Gad Valley", lifts: ["Little Cloud", "Gad 2", "Gadzoom", "Mid-Gad", "Wilbere", "Baby Thunder", "Baby Thunder Conveyor"] },
-                    { name: "Mineral Basin", lifts: ["Mineral Basin", "Peruvian Tunnel", "Baldy"] }
-                ]
-            },
-            {
-    id: "copper", name: "Copper Mountain",
-    areas: [
-        { name: "Center", lifts: ["American Eagle", "American Flyer", "Excelerator"] },
-        { name: "East", lifts: ["Super Bee", "Alpine", "Tubing Hill"] },
-        { name: "West", lifts: ["Woodward Express", "Timberline Express", "Lumberjack", "Kokomo Express", "Slingshot/Glide", "Rugrat"] },
-        { name: "Copper Bowl", lifts: ["Mountain Chief", "Black Jack"] },
-        { name: "Tucker Mountain", lifts: ["Three Bears"] },
-        { name: "Spaulding & Resolution", lifts: ["Resolution", "Storm King"] },
-        { name: "Union Peak", lifts: ["Sierra", "Rendezvous", "Celebrity Ridge"] },
-        { name: "Beginner Learning", lifts: ["Pitchfork", "Gem", "Easy Rider"] }
-    ]
-},
-            {
-                id: "bigsky", name: "Big Sky",
-                areas: [
-                    { name: "Cascade Area", lifts: ["Cascade 3", "Little Thunder 2"] },
-                    { name: "Challenger Area", lifts: ["Challenger 3"] },
-                    { name: "Dakota Area", lifts: ["Dakota 3"] },
-                    { name: "Derringer Area", lifts: ["Derringer 4", "Jayhawk 3", "One&Only Gondola", "Pea Shooter Carpet", "Skiwee Carpet"] },
-                    { name: "Explorer Area", lifts: ["Explorer Gondola"] },
-                    { name: "Headwaters Area", lifts: ["Headwaters 2"] },
-                    { name: "Iron Horse Area", lifts: ["Iron Horse 4"] },
-                    { name: "Lone Moose Area", lifts: ["Lone Moose 3"] },
-                    { name: "Lone Peak Area", lifts: ["Lone Peak Tram"] },
-                    { name: "Lone Tree Area", lifts: ["Lone Tree 4"] },
-                    { name: "Madison Area", lifts: ["Madison 8"] },
-                    { name: "Pony Express Area", lifts: ["Pony Express 3"] },
-                    { name: "Powder Seeker Area", lifts: ["Powder Seeker 6"] },
-                    { name: "Ramcharger Area", lifts: ["Bear Back", "Ramcharger 8"] },
-                    { name: "Shedhorn Area", lifts: ["Shedhorn 4"] },
-                    { name: "Southern Comfort Area", lifts: ["Southern Comfort 4"] },
-                    { name: "Spanish Peaks Area", lifts: ["Spanish Peaks Carpet", "Spanish Peaks Carpet 2", "Lewis and Clark 4", "Cabin 3", "Sacajawea 3", "Highlands 3", "Homer Poma", "Pull-Up Tow", "Tweener Poma"] },
-                    { name: "Stagecoach Area", lifts: ["Stagecoach 2"] },
-                    { name: "Swift Current Area", lifts: ["Bear Basin Carpet", "Beehive Basin Carpet", "Middle Basin Carpet", "Portable Park Tow", "Small Fry Carpet", "Swift Current 6"] },
-                    { name: "Thunder Wolf Area", lifts: ["Thunder Wolf 4"] },
-                    { name: "White Otter Area", lifts: ["White Otter 2"] }
-                ]
-            },
-            {
-  id: "loon", name: "Loon Mountain",
-  areas: [
-    { name: "North Peak", lifts: ["North Peak Express Quad"] },
-    { name: "South Peak", lifts: ["Lincoln Express Quad", "River's Edge Double", "Timbertown Quad", "Tote Road Connector"] },
-    { name: "West Basin", lifts: ["Children's Center Carpet", "Kancamagus 8", "Kissin' Cousin Double", "Sarsaparilla Carpet", "Little Sass Carpet"] },
-    { name: "Loon Peak", lifts: ["East Basin Double", "White Mountain Express Gondola", "Little Sister Double", "Seven Brothers Express Quad"] }
-  ]
-}
+            { id: "sugarloaf", name: "Sugarloaf", format: "reportpal", areas: [
+                { name: "Base Area", lifts: ["Moose-calator", "Sawduster", "Snubber", "Skidway"] },
+                { name: "Double Runner", lifts: ["Double Runner East", "Double Runner West"] },
+                { name: "SuperQuad", lifts: ["SuperQuad", "CVA/Colby T-Bar"] },
+                { name: "Skyline", lifts: ["Skyline", "#3 T-Bar/Bateau"] },
+                { name: "Whiffletree", lifts: ["Whiffletree SuperQuad"] },
+                { name: "King Pine", lifts: ["King Pine"] },
+                { name: "Timberline", lifts: ["Timberline"] },
+                { name: "West Mountain", lifts: ["Bucksaw Express", "West Mountain"] }
+            ]},
+            { id: "jacksonhole", name: "Jackson Hole", format: "reportpal", areas: [
+                { name: "Lifts And Trams", lifts: ["Aerial Tram", "Bridger Gondola", "Sweetwater Gondola", "Teewinot Quad", "Apres Vous Quad", "Casper Quad", "Eagle's Rest Quad", "Marmot Double", "Moose Creek Quad", "Sublette Quad", "Teton Quad", "Thunder Quad", "Union Pass Quad"] }
+            ]},
+            { id: "snowbird", name: "Snowbird", format: "reportpal", areas: [
+                { name: "Peruvian Gulch", lifts: ["Aerial Tram", "Peruvian", "Chickadee", "Chickadee Conveyor"] },
+                { name: "Gad Valley", lifts: ["Little Cloud", "Gad 2", "Gadzoom", "Mid-Gad", "Wilbere", "Baby Thunder", "Baby Thunder Conveyor"] },
+                { name: "Mineral Basin", lifts: ["Mineral Basin", "Peruvian Tunnel", "Baldy"] }
+            ]},
+            { id: "copper", name: "Copper Mountain", format: "reportpal", areas: [
+                { name: "Center", lifts: ["American Eagle", "American Flyer", "Excelerator"] },
+                { name: "East", lifts: ["Super Bee", "Alpine", "Tubing Hill"] },
+                { name: "West", lifts: ["Woodward Express", "Timberline Express", "Lumberjack", "Kokomo Express", "Slingshot/Glide", "Rugrat"] },
+                { name: "Copper Bowl", lifts: ["Mountain Chief", "Black Jack"] },
+                { name: "Tucker Mountain", lifts: ["Three Bears"] },
+                { name: "Spaulding & Resolution", lifts: ["Resolution", "Storm King"] },
+                { name: "Union Peak", lifts: ["Sierra", "Rendezvous", "Celebrity Ridge"] },
+                { name: "Beginner Learning", lifts: ["Pitchfork", "Gem", "Easy Rider"] }
+            ]},
+            { id: "bigsky", name: "Big Sky", format: "reportpal", areas: [
+                { name: "Cascade Area", lifts: ["Cascade 3", "Little Thunder 2"] },
+                { name: "Challenger Area", lifts: ["Challenger 3"] },
+                { name: "Dakota Area", lifts: ["Dakota 3"] },
+                { name: "Derringer Area", lifts: ["Derringer 4", "Jayhawk 3", "One&Only Gondola", "Pea Shooter Carpet", "Skiwee Carpet"] },
+                { name: "Explorer Area", lifts: ["Explorer Gondola"] },
+                { name: "Headwaters Area", lifts: ["Headwaters 2"] },
+                { name: "Iron Horse Area", lifts: ["Iron Horse 4"] },
+                { name: "Lone Moose Area", lifts: ["Lone Moose 3"] },
+                { name: "Lone Peak Area", lifts: ["Lone Peak Tram"] },
+                { name: "Lone Tree Area", lifts: ["Lone Tree 4"] },
+                { name: "Madison Area", lifts: ["Madison 8"] },
+                { name: "Pony Express Area", lifts: ["Pony Express 3"] },
+                { name: "Powder Seeker Area", lifts: ["Powder Seeker 6"] },
+                { name: "Ramcharger Area", lifts: ["Bear Back", "Ramcharger 8"] },
+                { name: "Shedhorn Area", lifts: ["Shedhorn 4"] },
+                { name: "Southern Comfort Area", lifts: ["Southern Comfort 4"] },
+                { name: "Spanish Peaks Area", lifts: ["Spanish Peaks Carpet", "Spanish Peaks Carpet 2", "Lewis and Clark 4", "Cabin 3", "Sacajawea 3", "Highlands 3", "Homer Poma", "Pull-Up Tow", "Tweener Poma"] },
+                { name: "Stagecoach Area", lifts: ["Stagecoach 2"] },
+                { name: "Swift Current Area", lifts: ["Bear Basin Carpet", "Beehive Basin Carpet", "Middle Basin Carpet", "Portable Park Tow", "Small Fry Carpet", "Swift Current 6"] },
+                { name: "Thunder Wolf Area", lifts: ["Thunder Wolf 4"] },
+                { name: "White Otter Area", lifts: ["White Otter 2"] }
+            ]},
+            { id: "loon", name: "Loon Mountain", format: "reportpal", areas: [
+                { name: "North Peak", lifts: ["North Peak Express Quad"] },
+                { name: "South Peak", lifts: ["Lincoln Express Quad", "River's Edge Double", "Timbertown Quad", "Tote Road Connector"] },
+                { name: "West Basin", lifts: ["Children's Center Carpet", "Kancamagus 8", "Kissin' Cousin Double", "Sarsaparilla Carpet", "Little Sass Carpet"] },
+                { name: "Loon Peak", lifts: ["East Basin Double", "White Mountain Express Gondola", "Little Sister Double", "Seven Brothers Express Quad"] }
+            ]},
+            // Liftie resorts
+            { id: "abasin", name: "Arapaho Basin", format: "liftie" },
+            { id: "alpine", name: "Alpine Meadows", format: "liftie" },
+            { id: "alta", name: "Alta", format: "liftie" },
+            { id: "alyeska", name: "Alyeska", format: "liftie" },
+            { id: "angel-fire", name: "Angel Fire", format: "liftie" },
+            { id: "aspen-highlands", name: "Aspen Highlands", format: "liftie" },
+            { id: "aspen-mountain", name: "Aspen Mountain", format: "liftie" },
+            { id: "attitash", name: "Attitash", format: "liftie" },
+            { id: "beavercreek", name: "Beaver Creek", format: "liftie" },
+            { id: "berkshire-east", name: "Berkshire East", format: "liftie" },
+            { id: "big-white", name: "Big White", format: "liftie" },
+            { id: "bogusbasin", name: "Bogus Basin", format: "liftie" },
+            { id: "boreal", name: "Boreal", format: "liftie" },
+            { id: "breck", name: "Breckenridge", format: "liftie" },
+            { id: "brettonwoods", name: "Bretton Woods", format: "liftie" },
+            { id: "brianhead", name: "Brian Head", format: "liftie" },
+            { id: "brighton", name: "Brighton", format: "liftie" },
+            { id: "burke-mountain", name: "Burke Mountain", format: "liftie" },
+            { id: "buttermilk", name: "Buttermilk", format: "liftie" },
+            { id: "camelback", name: "Camelback Mountain", format: "liftie" },
+            { id: "cannon", name: "Cannon", format: "liftie" },
+            { id: "cataloochee", name: "Cataloochee", format: "liftie" },
+            { id: "cranmore-mountain", name: "Cranmore", format: "liftie" },
+            { id: "crested-butte", name: "Crested Butte", format: "liftie" },
+            { id: "eldora", name: "Eldora", format: "liftie" },
+            { id: "grand-targhee", name: "Grand Targhee", format: "liftie" },
+            { id: "gunstock", name: "Gunstock", format: "liftie" },
+            { id: "heavenly", name: "Heavenly", format: "liftie" },
+            { id: "hoodoo", name: "Hoodoo", format: "liftie" },
+            { id: "hunter", name: "Hunter Mountain", format: "liftie" },
+            { id: "jay-peak", name: "Jay Peak", format: "liftie" },
+            { id: "keystone", name: "Keystone", format: "liftie" },
+            { id: "killington", name: "Killington", format: "liftie" },
+            { id: "king-pine", name: "King Pine", format: "liftie" },
+            { id: "kirkwood", name: "Kirkwood", format: "liftie" },
+            { id: "mad-river-glen", name: "Mad River Glen", format: "liftie" },
+            { id: "monarch", name: "Monarch Mountain", format: "liftie" },
+            { id: "mount-sunapee", name: "Mount Sunapee", format: "liftie" },
+            { id: "mountsnow", name: "Mount Snow", format: "liftie" },
+            { id: "mtbachelor", name: "Mount Bachelor", format: "liftie" },
+            { id: "mtbrighton", name: "Mt Brighton", format: "liftie" },
+            { id: "mthigh", name: "Mountain High", format: "liftie" },
+            { id: "mtrose", name: "Mount Rose", format: "liftie" },
+            { id: "northstar", name: "Northstar", format: "liftie" },
+            { id: "okemo", name: "Okemo", format: "liftie" },
+            { id: "parkcity", name: "Park City", format: "liftie" },
+            { id: "pico", name: "Pico Mountain", format: "liftie" },
+            { id: "pleasant-mountain", name: "Pleasant Mountain", format: "liftie" },
+            { id: "red-lodge-mountain", name: "Red Lodge Mountain", format: "liftie" },
+            { id: "sierra", name: "Sierra at Tahoe", format: "liftie" },
+            { id: "smuggs", name: "Smugglers' Notch", format: "liftie" },
+            { id: "snowbasin", name: "Snowbasin", format: "liftie" },
+            { id: "snowmass", name: "Snowmass", format: "liftie" },
+            { id: "stevens", name: "Stevens Pass", format: "liftie" },
+            { id: "stowe", name: "Stowe", format: "liftie" },
+            { id: "sugarbowl", name: "Sugar Bowl", format: "liftie" },
+            { id: "sun-peaks", name: "Sun Peaks", format: "liftie" },
+            { id: "sunday-river", name: "Sunday River", format: "liftie" },
+            { id: "tahoe-donner", name: "Tahoe Donner", format: "liftie" },
+            { id: "telluride", name: "Telluride", format: "liftie" },
+            { id: "tremblant", name: "Mont Tremblant", format: "liftie" },
+            { id: "vail", name: "Vail", format: "liftie" },
+            { id: "waterville", name: "Waterville Valley", format: "liftie" },
+            { id: "whistler-blackcomb", name: "Whistler Blackcomb", format: "liftie" },
+            { id: "whitefish", name: "Whitefish Mountain", format: "liftie" },
+            { id: "wildcat", name: "Wildcat", format: "liftie" },
+            { id: "winter-park", name: "Winter Park", format: "liftie" },
+            { id: "sunvalley", name: "Sun Valley", format: "liftie" },
         ];
 
         window.onload = () => {
@@ -244,8 +295,8 @@
             liftListDiv.innerHTML = '<div class="loading-text">🔄 Loading lifts...</div>';
             saveBtn.disabled = true;
 
-            // Hardcoded resorts with areas
-            if (selectedResort.areas) {
+            // Hardcoded reportpal resorts with areas
+            if (selectedResort.format === "reportpal") {
                 let htmlContent = "";
                 selectedResort.areas.forEach(area => {
                     htmlContent += `<div class="section-title">${area.name}</div>`;
@@ -259,6 +310,33 @@
                 });
                 liftListDiv.innerHTML = htmlContent;
                 saveBtn.disabled = false;
+                return;
+            }
+
+            // Liftie resorts — dynamic fetch
+            if (selectedResort.format === "liftie") {
+                try {
+                    const response = await fetch(`https://liftie.info/api/resort/${resortId}`);
+                    const data = await response.json();
+                    const statuses = data.lifts && data.lifts.status;
+                    if (statuses && Object.keys(statuses).length > 0) {
+                        let htmlContent = '<div class="section-title">All Lifts</div>';
+                        Object.keys(statuses).forEach(name => {
+                            htmlContent += `
+                                <div class="lift-item">
+                                    <input type="checkbox" value="${name}">
+                                    <label>${name}</label>
+                                </div>`;
+                        });
+                        liftListDiv.innerHTML = htmlContent;
+                        saveBtn.disabled = false;
+                    } else {
+                        liftListDiv.innerHTML = '<div class="loading-text">⚠️ No lift data found for this resort.</div>';
+                    }
+                } catch (error) {
+                    liftListDiv.innerHTML = '<div class="loading-text" style="color:red;">❌ Failed to load lifts. Network error.</div>';
+                    console.error(error);
+                }
                 return;
             }
 
