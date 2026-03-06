@@ -1,528 +1,529 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Ski Monitor Control</title>
-    <style>
-        body { font-family: -apple-system, system-ui, sans-serif; background: #f2f2f7; color: #1c1c1e; padding: 20px; max-width: 600px; margin: 0 auto; padding-bottom: 160px; }
-        .header { background: linear-gradient(135deg, #007aff, #005ecb); color: white; padding: 20px; border-radius: 20px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3); }
-        .header h1 { margin: 0; font-size: 24px; }
-        .header p { margin: 5px 0 0; opacity: 0.9; font-size: 14px; }
-        .card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
-        .input-label { font-weight: 700; display: block; margin-bottom: 10px; font-size: 12px; text-transform: uppercase; color: #8e8e93; letter-spacing: 0.5px; }
-        .id-box {
-            background: #f0f0f5; color: #1c1c1e; padding: 15px; border-radius: 12px;
-            font-family: monospace; font-size: 28px; text-align: center; letter-spacing: 3px; font-weight: 800;
-            border: 2px dashed #c7c7cc; user-select: all; cursor: pointer; margin-bottom: 15px;
-        }
-        .status-btn { width: 100%; padding: 12px; border-radius: 10px; border: none; font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 15px; transition: all 0.2s; }
-        .select-container { position: relative; width: 100%; margin-bottom: 20px; }
-        select {
-            width: 100%; padding: 16px; border-radius: 12px; border: 2px solid #e5e5ea;
-            font-size: 16px; font-weight: 600; background: #fff; color: #1c1c1e;
-            font-family: inherit; outline: none; appearance: none; cursor: pointer;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: border-color 0.2s;
-        }
-        select:focus { border-color: #007aff; }
-        .select-container::after {
-            content: "▼"; position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
-            font-size: 14px; color: #007aff; pointer-events: none; font-weight: bold;
-        }
-        .lift-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f2f2f7; }
-        input[type="checkbox"] { transform: scale(1.5); margin-right: 15px; accent-color: #007aff; }
-        label { font-size: 16px; flex-grow: 1; color: #1c1c1e; }
-        .section-title { font-weight: 800; color: #007aff; margin-top: 25px; margin-bottom: 5px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center; }
-        .btn-container {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            background: white; padding: 12px 15px;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
-            z-index: 1000; box-sizing: border-box;
-            display: flex; flex-direction: row; gap: 10px;
-        }
-        .btn-save {
-            flex: 2; padding: 16px; background: #007aff; color: white;
-            border: none; border-radius: 12px; font-size: 17px; font-weight: bold;
-            cursor: pointer;
-        }
-        .btn-save:disabled { background: #8e8e93; opacity: 0.6; cursor: not-allowed; }
-        .btn-notify {
-            flex: 1; padding: 16px; background: #34c759; color: white;
-            border: none; border-radius: 12px; font-size: 17px; font-weight: bold;
-            cursor: pointer;
-        }
-        .loading-text { text-align: center; color: #8e8e93; font-style: italic; padding: 20px; }
-        .select-all-btn { font-size: 13px; color: #007aff; font-weight: 600; cursor: pointer; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Ski Monitor Control</title>
+<style>
+body { font-family: -apple-system, system-ui, sans-serif; background: #f2f2f7; color: #1c1c1e; padding: 20px; max-width: 600px; margin: 0 auto; padding-bottom: 160px; }
+.header { background: linear-gradient(135deg, #007aff, #005ecb); color: white; padding: 20px; border-radius: 20px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 15px rgba(0, 122, 255, 0.3); }
+.header h1 { margin: 0; font-size: 24px; }
+.header p { margin: 5px 0 0; opacity: 0.9; font-size: 14px; }
+.card { background: white; padding: 20px; border-radius: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 20px; }
+.input-label { font-weight: 700; display: block; margin-bottom: 10px; font-size: 12px; text-transform: uppercase; color: #8e8e93; letter-spacing: 0.5px; }
+.id-box {
+background: #f0f0f5; color: #1c1c1e; padding: 15px; border-radius: 12px;
+font-family: monospace; font-size: 28px; text-align: center; letter-spacing: 3px; font-weight: 800;
+border: 2px dashed #c7c7cc; user-select: all; cursor: pointer; margin-bottom: 15px;
+}
+.status-btn { width: 100%; padding: 12px; border-radius: 10px; border: none; font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 15px; transition: all 0.2s; }
+.select-container { position: relative; width: 100%; margin-bottom: 20px; }
+select {
+width: 100%; padding: 16px; border-radius: 12px; border: 2px solid #e5e5ea;
+font-size: 16px; font-weight: 600; background: #fff; color: #1c1c1e;
+font-family: inherit; outline: none; appearance: none; cursor: pointer;
+box-shadow: 0 2px 8px rgba(0,0,0,0.04); transition: border-color 0.2s;
+}
+select:focus { border-color: #007aff; }
+.select-container::after {
+content: "▼"; position: absolute; right: 16px; top: 50%; transform: translateY(-50%);
+font-size: 14px; color: #007aff; pointer-events: none; font-weight: bold;
+}
+.lift-item { display: flex; align-items: center; padding: 12px 0; border-bottom: 1px solid #f2f2f7; }
+input[type="checkbox"] { transform: scale(1.5); margin-right: 15px; accent-color: #007aff; }
+label { font-size: 16px; flex-grow: 1; color: #1c1c1e; }
+.section-title { font-weight: 800; color: #007aff; margin-top: 25px; margin-bottom: 5px; font-size: 13px; text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center; }
+.btn-container {
+position: fixed; bottom: 0; left: 0; width: 100%;
+background: white; padding: 12px 15px;
+box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+z-index: 1000; box-sizing: border-box;
+display: flex; flex-direction: row; gap: 10px;
+}
+.btn-save {
+flex: 2; padding: 16px; background: #007aff; color: white;
+border: none; border-radius: 12px; font-size: 17px; font-weight: bold;
+cursor: pointer;
+}
+.btn-save:disabled { background: #8e8e93; opacity: 0.6; cursor: not-allowed; }
+.btn-notify {
+flex: 1; padding: 16px; background: #34c759; color: white;
+border: none; border-radius: 12px; font-size: 17px; font-weight: bold;
+cursor: pointer;
+}
+.loading-text { text-align: center; color: #8e8e93; font-style: italic; padding: 20px; }
+.select-all-btn { font-size: 13px; color: #007aff; font-weight: 600; cursor: pointer; }
 
-        /* --- WATCH LIST STYLES --- */
-        .watch-list { margin-bottom: 10px; }
-        .watch-item {
-            background: #f2f2f7; border-radius: 12px; padding: 14px;
-            margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
-        }
-        .watch-item-info { flex: 1; }
-        .watch-item-name { font-weight: 700; font-size: 15px; color: #1c1c1e; }
-        .watch-item-lifts { font-size: 12px; color: #8e8e93; margin-top: 3px; }
-        .watch-item-remove {
-            background: #ffebee; border: none; color: #c62828; border-radius: 8px;
-            padding: 8px 12px; font-size: 13px; font-weight: 700; cursor: pointer;
-        }
-        .add-resort-btn {
-            width: 100%; padding: 14px; border-radius: 12px; border: 2px dashed #007aff;
-            background: #f0f6ff; color: #007aff; font-size: 15px; font-weight: 700;
-            cursor: pointer; margin-top: 5px;
-        }
-        .add-resort-form { margin-top: 15px; border-top: 1px solid #f2f2f7; padding-top: 15px; display: none; }
-    </style>
+/* --- WATCH LIST STYLES --- */
+.watch-list { margin-bottom: 10px; }
+.watch-item {
+background: #f2f2f7; border-radius: 12px; padding: 14px;
+margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center;
+}
+.watch-item-info { flex: 1; }
+.watch-item-name { font-weight: 700; font-size: 15px; color: #1c1c1e; }
+.watch-item-lifts { font-size: 12px; color: #8e8e93; margin-top: 3px; }
+.watch-item-remove {
+background: #ffebee; border: none; color: #c62828; border-radius: 8px;
+padding: 8px 12px; font-size: 13px; font-weight: 700; cursor: pointer;
+}
+.add-resort-btn {
+width: 100%; padding: 14px; border-radius: 12px; border: 2px dashed #007aff;
+background: #f0f6ff; color: #007aff; font-size: 15px; font-weight: 700;
+cursor: pointer; margin-top: 5px;
+}
+.add-resort-form { margin-top: 15px; border-top: 1px solid #f2f2f7; padding-top: 15px; display: none; }
+</style>
 </head>
 <body>
 
-    <div class="header">
-        <h1>Ski Monitor</h1>
-        <p>Live Lift Status Alerts</p>
-    </div>
+<div class="header">
+<h1>Ski Monitor</h1>
+<p>Live Lift Status Alerts</p>
+</div>
 
-    <div class="card">
-        <label class="input-label">Alert Status</label>
-        <div style="display:flex; gap:10px; margin-bottom:15px;">
-            <button id="btnResume" onclick="setAlertState(true)"
-                style="flex:1; padding:14px; border-radius:12px; border:2px solid #2e7d32; background:#e8f5e9; color:#2e7d32; font-size:15px; font-weight:700; cursor:pointer;">
-                ✅ Active
-            </button>
-            <button id="btnPause" onclick="setAlertState(false)"
-                style="flex:1; padding:14px; border-radius:12px; border:2px solid #c62828; background:#ffebee; color:#c62828; font-size:15px; font-weight:700; cursor:pointer;">
-                ⏸️ Paused
-            </button>
-        </div>
-        <label class="input-label">Your Code (Tap to Copy)</label>
-        <div class="id-box" id="userSkiID" onclick="copyCode()">...</div>
-        <button class="status-btn" onclick="changeCode()" style="background:#fff3cd;color:#8a6d3b;border:1px solid #e0c97f;">
-            🔄 Generate New Code
-        </button>
-        <p style="text-align:center; margin-top:8px; font-size:13px; color:#888;">
-            Download the <b>Ntfy App</b> and subscribe to the code above.
-        </p>
-    </div>
+<div class="card">
+<label class="input-label">Alert Status</label>
+<div style="display:flex; gap:10px; margin-bottom:15px;">
+<button id="btnResume" onclick="setAlertState(true)"
+style="flex:1; padding:14px; border-radius:12px; border:2px solid #2e7d32; background:#e8f5e9; color:#2e7d32; font-size:15px; font-weight:700; cursor:pointer;">
+✅ Active
+</button>
+<button id="btnPause" onclick="setAlertState(false)"
+style="flex:1; padding:14px; border-radius:12px; border:2px solid #c62828; background:#ffebee; color:#c62828; font-size:15px; font-weight:700; cursor:pointer;">
+⏸️ Paused
+</button>
+</div>
+<label class="input-label">Your Code (Tap to Copy)</label>
+<div class="id-box" id="userSkiID" onclick="copyCode()">...</div>
+<button class="status-btn" onclick="changeCode()" style="background:#fff3cd;color:#8a6d3b;border:1px solid #e0c97f;">
+🔄 Generate New Code
+</button>
+<p style="text-align:center; margin-top:8px; font-size:13px; color:#888;">
+Download the <b>Ntfy App</b> and subscribe to the code above.
+</p>
+</div>
 
-    <!-- WATCHING CARD -->
-    <div class="card">
-        <label class="input-label">🏔️ Watching</label>
-        <div class="watch-list" id="watchList">
-            <div class="loading-text">Press the <b>Add Resort</b> button bellow to track 1 or more resorts.</div>
-        </div>
-        <button class="add-resort-btn" onclick="toggleAddForm()">＋ Add Resort</button>
+<!-- WATCHING CARD -->
+<div class="card">
+<label class="input-label">🏔️ Watching</label>
+<div class="watch-list" id="watchList">
+            <div class="loading-text">No resorts added yet.</div>
+            <div class="loading-text">No resorts added yet.</div>
+</div>
+<button class="add-resort-btn" onclick="toggleAddForm()">＋ Add Resort</button>
 
-        <!-- ADD RESORT FORM -->
-        <div class="add-resort-form" id="addResortForm">
-            <label class="input-label">Choose Mountain</label>
-            <div class="select-container">
-                <select id="resortSelect" onchange="fetchLifts()">
-                    <option value="" disabled selected>Tap to select a resort...</option>
-                </select>
-            </div>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-                <label class="input-label" style="margin:0;">Select Lifts</label>
-                <span class="select-all-btn" onclick="toggleSelectAll()">Select All</span>
-            </div>
-            <div id="liftList">
-                <div class="loading-text">Please select a mountain above.</div>
-            </div>
-            <button id="addToWatchBtn" onclick="addToWatchList()" disabled
-                style="width:100%; padding:14px; margin-top:15px; border-radius:12px; border:none; background:#007aff; color:white; font-size:16px; font-weight:700; cursor:pointer; opacity:0.5;">
-                ＋ Add to Watch List
-            </button>
-        </div>
-    </div>
+<!-- ADD RESORT FORM -->
+<div class="add-resort-form" id="addResortForm">
+<label class="input-label">Choose Mountain</label>
+<div class="select-container">
+<select id="resortSelect" onchange="fetchLifts()">
+<option value="" disabled selected>Tap to select a resort...</option>
+</select>
+</div>
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+<label class="input-label" style="margin:0;">Select Lifts</label>
+<span class="select-all-btn" onclick="toggleSelectAll()">Select All</span>
+</div>
+<div id="liftList">
+<div class="loading-text">Please select a mountain above.</div>
+</div>
+<button id="addToWatchBtn" onclick="addToWatchList()" disabled
+style="width:100%; padding:14px; margin-top:15px; border-radius:12px; border:none; background:#007aff; color:white; font-size:16px; font-weight:700; cursor:pointer; opacity:0.5;">
+＋ Add to Watch List
+</button>
+</div>
+</div>
 
-    <div class="btn-container">
-        <button class="btn-save" id="saveBtn" onclick="saveAll()">💾 SAVE ALL</button>
-        <button class="btn-notify" id="notifyBtn" onclick="sendInstantNotification()">🔔 NOTIFY NOW</button>
-    </div>
+<div class="btn-container">
+<button class="btn-save" id="saveBtn" onclick="saveAll()">💾 SAVE ALL</button>
+<button class="btn-notify" id="notifyBtn" onclick="sendInstantNotification()">🔔 NOTIFY NOW</button>
+</div>
 
-    <script>
-        const SERVER_LISTENER_TOPIC = "lucas_ski_config_99";
+<script>
+const SERVER_LISTENER_TOPIC = "lucas_ski_config_99";
 
-        // watchList is an array of { resortId, resortName, lifts[] }
-        let watchList = [];
+// watchList is an array of { resortId, resortName, lifts[] }
+let watchList = [];
 
-        const resorts = [
-            { id: "abasin", name: "Arapaho Basin", areas: [{ name: "All Lifts", lifts: ["Beavers", "Black Mountain Express Lift", "Lazy J Tow", "Lenawee Express Lift", "Molly Hogan Lift", "Molly's Magic Carpet", "Pallavicini Lift", "Pika Place Carpet", "Zuma Lift"] }] },
-            { id: "alta", name: "Alta", areas: [{ name: "All Lifts", lifts: ["Collins", "Sunnyside", "Supreme", "Sugarloaf", "Wildcat"] }] },
-            { id: "alyeska", name: "Alyeska", areas: [{ name: "All Lifts", lifts: ["Aerial Tram", "Bear Cub Quad", "Chair 7", "Finnland", "Glacier Bowl", "Ted's Express", "Terrain Parks", "Wade's Way"] }] },
-            { id: "angel-fire", name: "Angel Fire", areas: [{ name: "All Lifts", lifts: ["Chile Express", "Dreamcatcher", "Lift #2", "Lift #3", "Rakes Rider", "Ski School Wondercarpet", "Southwest Flyer", "Tubing Hill Wondercarpet"] }] },
-            { id: "aspen-highlands", name: "Aspen Highlands", areas: [{ name: "All Lifts", lifts: ["Cloud Nine", "Deep Temerity", "Exhibition", "Loge Peak", "Thunderbowl"] }] },
-            { id: "aspen-mountain", name: "Aspen Mountain", areas: [{ name: "All Lifts", lifts: ["Ajax Express", "Bell Mountain", "F.I.S.", "Hero's", "Little Nell", "Ruthies", "Shadow Mountain", "Silver Queen Gondola"] }] },
-            { id: "attitash", name: "Attitash", areas: [{ name: "All Lifts", lifts: ["Abenaki Quad", "Flying Bear", "Flying Yankee", "Kachina", "Learning Center", "Progression Quad", "Snowbelt", "The Mountaineer"] }] },
-            { id: "beavercreek", name: "Beaver Creek", areas: [{ name: "All Lifts", lifts: ["Arrow Bahn Express", "Bachelor Gulch Express", "Bibber Bahn", "Birds of Prey Express", "Centennial Express", "Cinch Express", "Elkhorn Lift", "Grouse Mountain Express", "Haymeadow Express", "Highlands Lift", "Jitterbug", "Larkspur Express", "Lower BC Mtn Express", "Magic Carpet", "McCoy Park Express", "Ritz Bahn", "Reunion Lift", "Red Buffalo Express", "Riverfront Express Gondola", "Rose Bowl Express", "Snowflake", "Strawberry Park Express", "Trail Rider", "Upper BC Mtn Express", "Wagon Train"] }] },
-            { id: "berkshire-east", name: "Berkshire East", areas: [{ name: "All Lifts", lifts: ["Bobcat Magic Carpet", "Summit Quad", "T-Bar Express Quad", "Top Notch Double", "Wilderness Peak Quad"] }] },
-            { id: "57", name: "Bear Mountain", areas: [] },
-            { id: "big-white", name: "Big White", areas: [{ name: "All Lifts", lifts: ["Alpine T-Bar", "Black Forest Express Quad", "Bullet Express Quad", "Cliff Chair", "Falcon Double Chair", "Gem Lake Express Quad", "Kids Carpet", "Lara\u2019s Gondola (free access)", "Magic Carpet", "Magic Carpet 2.0", "Plaza Quad Chair", "Powder Quad Chair", "Ridge Rocket Express Quad", "Snow Ghost Express 6 Pack", "TELUS Park Chair", "Tube Park Lift"] }] },
-            { id: "bigsky", name: "Big Sky", areas: [
-                { name: "Cascade Area", lifts: ["Cascade 3", "Little Thunder 2"] },
-                { name: "Challenger Area", lifts: ["Challenger 3"] },
-                { name: "Dakota Area", lifts: ["Dakota 3"] },
-                { name: "Derringer Area", lifts: ["Derringer 4", "Jayhawk 3", "One&Only Gondola", "Pea Shooter Carpet", "Skiwee Carpet"] },
-                { name: "Explorer Area", lifts: ["Explorer Gondola"] },
-                { name: "Headwaters Area", lifts: ["Headwaters 2"] },
-                { name: "Iron Horse Area", lifts: ["Iron Horse 4"] },
-                { name: "Lone Moose Area", lifts: ["Lone Moose 3"] },
-                { name: "Lone Peak Area", lifts: ["Lone Peak Tram"] },
-                { name: "Lone Tree Area", lifts: ["Lone Tree 4"] },
-                { name: "Madison Area", lifts: ["Madison 8"] },
-                { name: "Pony Express Area", lifts: ["Pony Express 3"] },
-                { name: "Powder Seeker Area", lifts: ["Powder Seeker 6"] },
-                { name: "Ramcharger Area", lifts: ["Bear Back", "Ramcharger 8"] },
-                { name: "Shedhorn Area", lifts: ["Shedhorn 4"] },
-                { name: "Southern Comfort Area", lifts: ["Southern Comfort 4"] },
-                { name: "Spanish Peaks Area", lifts: ["Cabin 3", "Highlands 3", "Homer Poma", "Lewis and Clark 4", "Pull-Up Tow", "Sacajawea 3", "Spanish Peaks Carpet", "Spanish Peaks Carpet 2", "Tweener Poma"] },
-                { name: "Stagecoach Area", lifts: ["Stagecoach 2"] },
-                { name: "Swift Current Area", lifts: ["Bear Basin Carpet", "Beehive Basin Carpet", "Middle Basin Carpet", "Portable Park Tow", "Small Fry Carpet", "Swift Current 6"] },
-                { name: "Thunder Wolf Area", lifts: ["Thunder Wolf 4"] },
-                { name: "White Otter Area", lifts: ["White Otter 2"] }
-            ]},
-            { id: "3", name: "Blue", areas: [] },
-            { id: "bogusbasin", name: "Bogus Basin", areas: [{ name: "All Lifts", lifts: ["Bitterroot Chair", "Coach Chairlift", "Deer Point Express", "Discovery Carpet", "Easy Rider Carpet", "Explorer Carpet", "Morning Star Express", "Pine Creek Express", "Showcase Chair", "Superior Express"] }] },
-            { id: "boreal", name: "Boreal", areas: [{ name: "All Lifts", lifts: ["49er Triple Chairlift", "Accelerator Express Quad Charilift", "California Cruiser Quad Chairlift", "Castle Peak Quad Chairlift", "Cedar Ridge Triple Chairlift", "Discovery Carpet", "Lost Dutchman Triple Chairlift", "Tahoe Tubing Carpet"] }] },
-            { id: "breck", name: "Breckenridge", areas: [{ name: "All Lifts", lifts: ["6-Chair", "A-Chair", "Admin Carpet 1", "Admin Carpet 2", "Beaver Run SuperChair", "BR Adult Carpet", "BR Kids Carpet", "BreckConnect Gondola", "C-Chair", "Camelback Carpet", "Camelback Platter", "Colorado SuperChair", "E-Chair", "El Dorado Carpet", "El Dorado Platter", "Falcon SuperChair", "Five SuperChair", "Freedom SuperChair", "Horseshoe Bowl T-Bar", "Imperial SuperChair", "Independence SuperChair", "Kensho SuperChair", "Mercury SuperChair", "Peak 8 Kids Carpet 1", "Peak 8 Kids Carpet 2", "Peak 8 SuperConnect", "Quicksilver SuperChair", "Rip's Ride", "Rocky Mountain SuperChair", "Snowflake", "Trygve's Platter", "Tweener Carpet", "Village Carpet A", "Village Carpet B", "Zendo Chair"] }] },
-            { id: "brettonwoods", name: "Bretton Woods", areas: [{ name: "All Lifts", lifts: ["Bethlehem Express Quad II (BEQ II)", "Bretton Woods Skyway Gondola", "Learning Center Quad (LCQ)", "Red Carpet", "Rosebrook Summit Express Quad", "Telegraph T-Bar", "West Mountain Express", "Wonder Carpet (Ski School Only)", "Zephyr High Speed Quad"] }] },
-            { id: "brianhead", name: "Brian Head", areas: [{ name: "All Lifts", lifts: ["Alpen Glow, Chair 8", "Blackfoot, Chair 3", "Giant Steps Express, Chair 2", "Navajo Express, Chair 4", "Pioneer, Chair 6", "Roulette, Chair 5", "The Dunes, Chair 7", "Wildflower, Chair 1"] }] },
-            { id: "brighton", name: "Brighton", areas: [{ name: "All Lifts", lifts: ["Caterpillar", "Crest 6", "Explorer", "Great Western Express", "Majestic", "Milly Express", "Porcupine", "Snake Creek"] }] },
-            { id: "burke-mountain", name: "Burke Mountain", areas: [{ name: "All Lifts", lifts: ["J-Bar", "Magic Carpet", "Mid-Burke Express", "Sherburne Express", "T-Bar"] }] },
-            { id: "buttermilk", name: "Buttermilk", areas: [{ name: "All Lifts", lifts: ["Mighty Mite", "Panda Peak", "Summit Express", "Tiehack Express", "West Buttermilk Express"] }] },
-            { id: "camelback", name: "Camelback Mountain", areas: [{ name: "All Lifts", lifts: ["Bailey", "Beginner Carpet 3", "Beginner Carpet 4", "Beginner Carpet I", "Black Bear 6", "Coolmoor Carpet", "Meadows", "Raceway", "Stevenson Express", "Sunbowl", "The Glen", "Tubing I", "Tubing II"] }] },
-            { id: "cannon", name: "Cannon", areas: [{ name: "All Lifts", lifts: ["Brookside Triple", "Cannonball Quad Chair", "Eagle Cliff Triple Chair", "Huckerbrook Handle Tow", "Mittersill Double", "Peabody Express Quad", "Tuckerbrook Quad", "Valar T-Bar", "Zoomer Triple"] }] },
-            { id: "cataloochee", name: "Cataloochee", areas: [{ name: "All Lifts", lifts: ["Beginners Luck (Conveyor)", "Easy Way (Triple)", "Omigosh (Quad)", "Rock Island Line (Quad)", "Wolf Creek ( Conveyor)"] }] },
-            { id: "copper", name: "Copper Mountain", areas: [
-                { name: "Center", lifts: ["American Eagle", "American Flyer", "Excelerator"] },
-                { name: "East", lifts: ["Alpine", "Super Bee", "Tubing Hill"] },
-                { name: "West", lifts: ["Kokomo Express", "Lumberjack", "Rugrat", "Slingshot/Glide", "Timberline Express", "Woodward Express"] },
-                { name: "Copper Bowl", lifts: ["Black Jack", "Mountain Chief"] },
-                { name: "Tucker Mountain", lifts: ["Three Bears"] },
-                { name: "Spaulding & Resolution", lifts: ["Resolution", "Storm King"] },
-                { name: "Union Peak", lifts: ["Celebrity Ridge", "Rendezvous", "Sierra"] },
-                { name: "Beginner Learning", lifts: ["Easy Rider", "Gem", "Pitchfork"] }
-            ]},
-            { id: "cranmore-mountain", name: "Cranmore", areas: [{ name: "All Lifts", lifts: ["C-More Double", "Flying Carpet", "Giant Swing", "Lookout Triple", "Magic Carpet", "Mountain Coaster", "Schneider Triple", "Skimobile Express", "Soaring Eagle", "South Quad", "Tubing Park"] }] },
-            { id: "crested-butte", name: "Crested Butte", areas: [{ name: "All Lifts", lifts: ["Aspen Carpet", "East River Express", "Gold Link Lift", "High Lift T-Bar", "North Face Lift T-Bar", "Painter Boy Lift", "Paradise Express", "Peachtree Lift", "Pine Carpet", "Prospect Lift", "Red Lady Express", "Silver Queen Express", "Spruce Carpet", "Teocalli Lift", "West Wall Lift"] }] },
-            { id: "49", name: "Deer Valley", areas: [] },
-            { id: "eldora", name: "Eldora", areas: [{ name: "All Lifts", lifts: ["Alpenglow", "Caribou", "Corona", "EZ", "Indian Peaks", "Little Hawk", "Race", "Sundance", "Sunkid", "Tenderfoot"] }] },
-            { id: "grand-targhee", name: "Grand Targhee", areas: [{ name: "All Lifts", lifts: ["Blackfoot", "Colter", "Dreamcatcher", "Huckleberry", "Sacajawea", "Shoshone"] }] },
-            { id: "gunstock", name: "Gunstock", areas: [{ name: "All Lifts", lifts: ["E.Z. Carpet", "Panorama", "Penny Pitou Silver Medal", "Pistol", "Ramrod", "Tiger", "Tubing Carpet", "Wonder Carpet"] }] },
-            { id: "heavenly", name: "Heavenly", areas: [{ name: "All Lifts", lifts: ["Bear Cave", "Big Easy", "Boulder", "Canyon", "Comet", "Dipper", "Enchanted Forest", "First Ride", "Galaxy", "Gondola", "Groove", "Gunbarrel", "Mott", "North Bowl", "Olympic", "Patsy's", "Pioneer", "Powderbowl", "Red Fir", "Sky", "Stagecoach", "Tamarack", "The Meadow Carpet", "The Tram", "Tube Lift", "World Cup"] }] },
-            { id: "hoodoo", name: "Hoodoo", areas: [{ name: "All Lifts", lifts: ["BIG GREEN MACHINE", "EASY RIDER", "ED", "HAROLD'S MAGIC CARPET", "HODAG", "LIFT", "MANZANITA"] }] },
-            { id: "hunter", name: "Hunter Mountain", areas: [{ name: "All Lifts", lifts: ["20th Century (C Lift)", "Broadway Express", "Discovery Carpet", "F Lift", "Frostland Carpet", "H Lift", "Hunter East Carpet", "Kaatskill Flyer", "Northern Express", "Otis Quad", "Tubing Carpet", "Zephyr Express"] }] },
-            { id: "jacksonhole", name: "Jackson Hole", areas: [{ name: "Lifts And Trams", lifts: ["Aerial Tram", "Apres Vous Quad", "Bridger Gondola", "Casper Quad", "Eagle's Rest Quad", "Marmot Double", "Moose Creek Quad", "Sublette Quad", "Sweetwater Gondola", "Teewinot Quad", "Teton Quad", "Thunder Quad", "Union Pass Quad"] }] },
-            { id: "jay-peak", name: "Jay Peak", areas: [{ name: "All Lifts", lifts: ["Aerial Tram", "Bonaventure Quad", "Flyer Quad", "Jet Triple", "Metro Quad", "Stateside Carpet", "Taxi Quad", "Tramside Carpet", "Village Double"] }] },
-            { id: "59", name: "June Mountain", areas: [] },
-            { id: "keystone", name: "Keystone", areas: [{ name: "All Lifts", lifts: ["A-51", "Bergman Express", "Cadillac", "Discovery", "Double Barrel 1", "Double Barrel 2", "Kokomo", "Mid-Station Ski School", "Montezuma Express", "Outback Express", "Outpost Gondola", "Peru Express", "Ranger", "River Run Gondola", "Ruby Express", "Santiago Express", "Summit Express", "Sun Kid", "Triangle", "Tubing Hill", "Wayback"] }] },
-            { id: "killington", name: "Killington", areas: [{ name: "All Lifts", lifts: ["Bear Mountain Quad", "Canyon Quad", "K-1 Express Gondola", "Learn To Carpet", "Needles Eye Express Quad", "Northbrook Quad", "North Ridge Quad", "Progression Carpet I", "Ramshead Express Quad", "Skye Peak Express Quad", "Skyeship Express Gondola Stage I", "Skyeship Express Gondola Stage II", "Snowdon Six Express", "Snowdon Triple", "Snowshed  Double", "Snowshed Express Quad", "South Ridge Quad", "Sunrise Village Triple", "Superstar Six"] }] },
-            { id: "king-pine", name: "King Pine", areas: [{ name: "All Lifts", lifts: ["Bear Rug Carpet", "Black Bear Triple", "Cubby Tow", "Polar Bear Triple", "Powder Bear Triple"] }] },
-            { id: "kirkwood", name: "Kirkwood", areas: [{ name: "All Lifts", lifts: ["#1 Snowkirk", "#2 Caples Crest", "#3 Iron Horse", "#4 Sunrise", "#5 Solitude", "#6 Cornice Express", "#7 TC Express", "#9 Bunny", "#10 The Wall", "#11 The Reut", "#12 Ski School Magic Carpet", "#13 Public Magic Carpet", "#14 Vista T-Bar"] }] },
-            { id: "loon", name: "Loon Mountain", areas: [
-                { name: "Loon Peak", lifts: ["East Basin Double", "Little Sister Double", "Seven Brothers Express Quad", "White Mountain Express Gondola"] },
-                { name: "North Peak", lifts: ["North Peak Express Quad"] },
-                { name: "South Peak", lifts: ["Lincoln Express Quad", "River's Edge Double", "Timbertown Quad", "Tote Road Connector"] },
-                { name: "West Basin", lifts: ["Children's Center Carpet", "Kancamagus 8", "Kissin' Cousin Double", "Little Sass Carpet", "Sarsaparilla Carpet"] }
-            ]},
-            { id: "mad-river-glen", name: "Mad River Glen", areas: [{ name: "All Lifts", lifts: ["Birdland Double Chair", "Callie's Corner Handle Tow", "Practice Slope Chair", "Single Chair", "Sunnyside Double Chair"] }] },
-            { id: "60", name: "Mammoth Mountain", areas: [] },
-            { id: "monarch", name: "Monarch Mountain", areas: [{ name: "All Lifts", lifts: ["Breezeway", "Caterpillar", "Garfield", "Kaleidoscope", "Panorama", "Pioneer", "Safari", "Tomichi", "Tumbelina"] }] },
-            { id: "mount-sunapee", name: "Mount Sunapee", areas: [{ name: "All Lifts", lifts: ["Clipper Ship Quad", "Flying Carpet", "Middle Carpet", "North Peak Triple", "Small Carpet", "Spruce Triple", "Sunapee Express", "Sunbowl Express"] }] },
-            { id: "mountsnow", name: "Mount Snow", areas: [{ name: "All Lifts", lifts: ["Apollo", "Bear Trap", "Bluebird Express", "Canyon Express", "Challenger", "Covered Bridge", "Discovery Shuttle", "Gemini", "Grand Summit Express", "Grommet", "Heavy Metal", "Mercury", "Nitro Express", "Outpost", "Seasons", "Sunbrook Express", "Sundance Express", "Voyager"] }] },
-            { id: "mtbachelor", name: "Mount Bachelor", areas: [{ name: "All Lifts", lifts: ["Alpenglow", "Chipmunk Carpet", "Cloudchaser", "Early Riser", "Lava Tube", "Little Pine", "Northwest", "Outback", "Pine Marten", "Rainbow", "Red Chair", "Skyliner Express", "Summit", "Sunrise"] }] },
-            { id: "mtbrighton", name: "Mt Brighton", areas: [{ name: "All Lifts", lifts: ["Big Riskey", "Blue Sky", "Bunny", "Challenge", "Cheetah", "Chicken Chute", "Crosscut", "Easy Street", "Flatiron", "Gasoline Alley", "Golden Eagle", "Gopher", "Grand River", "Hare", "Larkspur", "Ledges", "Ore Creek", "Osprey", "Perk\u2019s Folly", "Riglet Park", "Ryan\u2019s Run", "Sawtooth Ridge", "Sidewinder", "Snowshoe", "Sunrise Bowl", "Thalacker\u2019s"] }] },
-            { id: "mthigh", name: "Mountain High", areas: [{ name: "All Lifts", lifts: ["Blue Ridge Express", "Competition", "Conquest", "Coyote", "Discovery", "Easy Rider", "Exhibition", "Mountain High Express", "Moving Carpet East", "Moving Carpet West Long", "Moving Carpet West Short", "Roadrunner", "Snowflake"] }] },
-            { id: "mtrose", name: "Mount Rose", areas: [{ name: "All Lifts", lifts: ["Chuter", "Galena", "Lakeview Express", "Magic", "Northwest Express", "Wizard", "Zephyr Express"] }] },
-            { id: "northstar", name: "Northstar", areas: [{ name: "All Lifts", lifts: ["Arrow Express", "Backside Express", "Big Springs Express Gondola", "Comstock Express", "Hemlock Carpet", "Highlands Gondola", "Jeffrey Pines Carpet", "Juniper Carpet", "Lookout Link Platter", "Martis Camp Express", "Promised Land Express", "Rendezvous Triple", "Sugar Pine Carpet", "Tahoe Zephyr Express", "The Big Easy Quad", "The Spruces Carpet", "Timberline Triple", "Village Express", "Vista Express"] }] },
-            { id: "okemo", name: "Okemo", areas: [{ name: "All Lifts", lifts: ["Black Ridge Triple", "Coleman Brook Express Quad", "Evergreen Summit Express", "F-10 Carpet", "Glades Peak Quad", "Morning Star Triple", "Orion's Belt Carpet", "Quantum Six", "Sachem Quad", "Ski and Ride School Carpet", "Skywalker Carpet", "Snowstar Carpet", "Solitude Express Quad", "South Face Express Quad", "South Ridge Quad A", "South Ridge Quad B", "Stargazer", "Starlight", "Sunburst Six", "Sunshine Quad", "The Pull"] }] },
-            { id: "61", name: "Palisades Tahoe/Apline Meadows", areas: [] },
-            { id: "parkcity", name: "Park City", areas: [{ name: "All Lifts", lifts: ["3 Kings Lift", "9990 Express", "Bonanza Lift", "Cabriolet", "Crescent Lift", "Day Break", "Dreamcatcher", "Dreamscape", "Eagle Lift", "Eaglet Lift", "First Time Lift", "Flat Iron", "Frostwood Gondola", "High Meadow", "Iron Mtn. Express", "Jupiter Lift", "King Con Lift", "McConkey's Lift", "Mine Cart", "Motherlode Lift", "Mule Train", "Orange Bubble Express", "Over and Out", "PayDay Lift", "Peak 5", "Pioneer Lift", "Quicksilver Canyons Side", "Quicksilver MV Side", "Red Pine Gondola", "Rip Cord", "Saddleback Express", "Silver Lining", "Silver Star Lift", "Silverlode Lift", "Shortcut", "Sun Peak Express", "Sunrise Gondola", "Super Condor Express", "Sweet Pea", "Thaynes Lift", "Timberline", "Tombstone Express", "Town Lift"] }] },
-            { id: "pico", name: "Pico Mountain", areas: [{ name: "All Lifts", lifts: ["Bonanza Carpet", "Golden Express Quad", "Knomes Knoll Triple", "Little Pico Triple", "Outpost Double", "Summit Express Quad"] }] },
-            { id: "pleasant-mountain", name: "Pleasant Mountain", areas: [{ name: "All Lifts", lifts: ["Li'l Pine Beginner Carpet", "Pine Quad", "Rabbit Run", "Snow Pine Carpet", "Summit Express", "Sunnyside Triple"] }] },
-            { id: "red-lodge-mountain", name: "Red Lodge Mountain", areas: [{ name: "All Lifts", lifts: ["Chair Status"] }] },
-            { id: "65", name: "Solitude", areas: [] },
-            { id: "168", name: "Schweitzer", areas: [] },
-            { id: "sierra", name: "Sierra at Tahoe", areas: [{ name: "All Lifts", lifts: ["Blizzard Mountain Tubing", "Easy Rider Express", "El Dorado", "Fuego Carpet", "Grandview Express", "Nob Hill", "Puma", "Rock Garden", "Short Stuff", "Slider Carpet", "Tahoe King", "Thunder Gulch Carpet (Ski/Ride School Only)", "West Bowl Express", "Wild Mountain Carpet (Ski/Ride School Only)"] }] },
-            { id: "smuggs", name: "Smugglers' Notch", areas: [{ name: "All Lifts", lifts: ["Madonna I Lift", "Madonna II Lift", "Mogul Mouse's Magic Lift", "Morse Highlands Lift", "Sir Henry's Glider Lift", "Sterling Lift", "Sterling T-Bar Lift", "Village Lift"] }] },
-            { id: "snowbasin", name: "Snowbasin", areas: [{ name: "All Lifts", lifts: ["Allen Peak Tram", "Becker", "DeMoisy Express", "Grizzly Carpet", "John Paul Express", "Littlecat Express", "Middle Bowl Express", "Needles Gondola", "Porcupine", "Strawberry Gondola", "Wildcat Express", "Wildcat Handle Tow", "Wildflower Carpet"] }] },
-            { id: "snowbird", name: "Snowbird", areas: [
-                { name: "Gad Valley", lifts: ["Baby Thunder", "Baby Thunder Conveyor", "Gad 2", "Gadzoom", "Little Cloud", "Mid-Gad", "Wilbere"] },
-                { name: "Mineral Basin", lifts: ["Baldy", "Mineral Basin", "Peruvian Tunnel"] },
-                { name: "Peruvian Gulch", lifts: ["Aerial Tram", "Chickadee", "Chickadee Conveyor", "Peruvian"] }
-            ]},
-            { id: "2", name: "Snowshoe", areas: [] },
-            { id: "snowmass", name: "Snowmass", areas: [{ name: "All Lifts", lifts: ["Alpine Springs", "Assay Hill", "Assay Hill Carpet", "Bear Bottom Carpet", "Big Burn", "Campground", "Cirque Surface Lift", "Coney Express", "Elk Camp Chairlift", "Elk Camp Gondola", "High Alpine", "Meadows Carpet", "Meadows Chairlift", "Sam's Knob", "Scooper Surface Lift", "Sheer Bliss", "Sky Cab Gondola", "Treehouse Carpet", "Two Creeks", "Village Express"] }] },
-            { id: "173", name: "Snow Valley", areas: [] },
-            { id: "58", name: "Snow Summit", areas: [] },
-            { id: "6", name: "Steamboat", areas: [] },
-            { id: "stevens", name: "Stevens Pass", areas: [{ name: "All Lifts", lifts: ["Brooks Express", "Daisy", "Double Diamond", "Hogsback Express", "Jupiter Express", "Kehr's", "Marmot Carpet", "Pika Carpet", "Rope Tow 1", "Rope Tow 2", "Seventh Heaven", "Skyline Express", "Southern Cross", "Tye Mill"] }] },
-            { id: "stowe", name: "Stowe", areas: [{ name: "All Lifts", lifts: ["Adventure Carpet", "Adventure Triple", "FourRunner Quad", "Lookout Double", "Mansfield Gondola", "Meadows Carpet", "Meadows Quad", "Over Easy Gondola", "Sensation Quad", "Sunny Spruce Quad", "Sunrise Lift", "Toll House Double"] }] },
-            { id: "1", name: "Stratton", areas: [] },
-            { id: "sugarbowl", name: "Sugar Bowl", areas: [{ name: "All Lifts", lifts: ["Christmas Tree Express", "Crow's Peak", "Flume Carpet", "Gondola", "Jerome Hill Express", "Mt. Disney Express", "Mt. Judah Express", "Mt. Lincoln Express", "Nob Hill", "Summit Chair", "Village Tow", "White Pine"] }] },
-            { id: "70", name: "Sugarbush", areas: [] },
-            { id: "sugarloaf", name: "Sugarloaf", areas: [
-                { name: "Base Area", lifts: ["Moose-calator", "Sawduster", "Skidway", "Snubber"] },
-                { name: "Double Runner", lifts: ["Double Runner East", "Double Runner West"] },
-                { name: "King Pine", lifts: ["King Pine"] },
-                { name: "Skyline", lifts: ["#3 T-Bar/Bateau", "Skyline"] },
-                { name: "SuperQuad", lifts: ["CVA/Colby T-Bar", "SuperQuad"] },
-                { name: "Timberline", lifts: ["Timberline"] },
-                { name: "West Mountain", lifts: ["Bucksaw Express", "West Mountain"] },
-                { name: "Whiffletree", lifts: ["Whiffletree SuperQuad"] }
-            ]},
-            { id: "sun-peaks", name: "Sun Peaks", areas: [{ name: "All Lifts", lifts: ["Burfield Chairlift", "Crystal Chairlift", "Elevation Chairlift", "Learning Zone Carpet", "Morrisey Express Chairlift", "Morrisey Platter", "Orient Chairlift", "Sunburst Express Chairlift", "Sundance Express Chairlift", "Tube Time Carpet", "Village Carpet", "Village Platter", "West Bowl Express Chairlift"] }] },
-            { id: "sunday-river", name: "Sunday River", areas: [{ name: "All Lifts", lifts: ["Alera Group Competition Lift #5", "Aurora Peak Quad #12", "Barker 6 #1", "Chondola #7", "Jordan 8 Lift #14", "Jordan Mountain Double #13", "Little White Cap Quad #11", "Locke Mountain Triple #4", "Lower Sundance Surface Lift #16", "Merrill Hill Triple #19", "Middle Sundance Surface Lift #17", "North Peak Express #6", "OZ Quad #15", "Quantum Leap Triple #3", "South Ridge Express #2", "Spruce Peak Triple #8", "Upper Sundance Surface Lift #18", "White Cap Quad #9", "White Heat Quad #10"] }] },
-            { id: "sunvalley", name: "Sun Valley", areas: [{ name: "All Lifts", lifts: ["Broadway", "Challenger", "Christmas", "Dollar", "Elkhorn", "Flying Squirrel", "Frenchman's", "Half Dollar", "Kinderspielplatz", "Lookout", "Lookout Express", "Mayday", "Quarter Dollar", "River Run", "Roundhouse Express", "Seattle Ridge", "The Accelerator"] }] },
-            { id: "tahoe-donner", name: "Tahoe Donner", areas: [{ name: "All Lifts", lifts: ["Caterpillar Conveyor", "Eagle Rock Chairlift", "Learning Center Conveyor", "Magic Carpet", "Snowbird Chairlift"] }] },
-            { id: "telluride", name: "Telluride", areas: [{ name: "All Lifts", lifts: ["Adult Magic Carpet", "Apex Lift", "Childrens Magic Carpet", "Chondola", "Free Gondola \u2013 Town to MV", "Gold Hill Express", "Lift 7", "Lynx", "North Meadows Carpet", "Oak Street Lift", "Plunge Lift", "Polar Queen Express", "Prospect Express", "Revelation Lift", "Sunshine Express", "UTE Park", "Village Express"] }] },
-            { id: "tremblant", name: "Mont Tremblant", areas: [{ name: "All Lifts", lifts: ["Cabriolet", "Duncan Express", "Edge", "Expo Express", "Flying Mile", "Le Soleil", "Lowell Thomas Express", "Porte du Soleil", "Tapis Magique \u00c9quilibre 1", "Tapis Magique \u00c9quilibre 2", "Tapis Magique On\u00e9sime", "T\u00e9l\u00e9cabine Casino Express", "T\u00e9l\u00e9cabine Express", "TGV"] }] },
-            { id: "vail", name: "Vail", areas: [{ name: "All Lifts", lifts: ["Avanti Express #2", "Black Forest #27", "Born Free Express #8", "Cascade Village #20", "Eagle Bahn Gondola #19", "Earl's Express #38", "Elvis Bahn #25", "Game Creek Express #7", "Golden Peak T-Bar", "Gondola One", "Gopher Hill #12", "High Noon Express #5", "Highline Express #10", "Lightning Coyote #18", "Lionshead Magic Carpet #34", "Little Eagle #15", "Mongolia Platter #22", "Mountaintop Express #4", "Northwoods Express #11", "Orient Express #21", "Patty Bahn", "Pete's Express #39", "Pride Express #26", "Riva Bahn Express #6", "Rip's Ride Carpet #29", "Skyline Express #37", "Sourdough Express #14", "Sun Down Express #17", "Sun Up Express #9", "Tea Cup Express #36", "Thunder Cat Carpet #35", "Wapiti Platter #24", "Wildwood Express #3"] }] },
-            { id: "waterville", name: "Waterville Valley", areas: [{ name: "All Lifts", lifts: ["Exhibition T-Bar", "Green Peak Triple", "High Country", "Lower Meadows", "Lower Pasture Carpet", "Northside", "Sunny Side", "Tecumseh Express", "Upper Pasture Carpet", "Valley Run Quad"] }] },
-            { id: "whistler-blackcomb", name: "Whistler Blackcomb", areas: [{ name: "All Lifts", lifts: ["7th Heaven Express", "Big Red Express", "Blackcomb Gondola Lower", "Blackcomb Gondola Upper", "Bubly Tube Park", "Catskinner Express", "Creekside Gondola", "Crystal Ridge Express", "Emerald 6 Express", "Excalibur Gondola Lower", "Excalibur Gondola Upper", "Excelerator Express", "Fitzsimmons Express", "Franz's Chair", "Garbanzo Express", "Glacier Express", "Harmony 6 Express", "Horstman T-Bar", "Jersey Cream Express", "Magic Chair", "Olympic Chair", "Peak 2 Peak Gondola", "Peak Express", "Showcase T-Bar", "Symphony Express", "T-Bars", "Whistler Village Gondola Lower", "Whistler Village Gondola Upper"] }] },
-            { id: "whitefish", name: "Whitefish Mountain", areas: [{ name: "All Lifts", lifts: ["2 Easy Carpet", "Big Easy Carpet", "Chair 1 - Big Mountain Express", "Chair 2 - Swift Creek Express", "Chair 3 - Tenderfoot", "Chair 4 - Snow Ghost Express", "Chair 5 - East Rim", "Chair 6 - Base Lodge", "Chair 7 - Big Creek Express", "Chair 8 - Hellroaring", "Chair 9 - Easy Rider", "Chair 10 - Bad Rock", "Chair 11 - Flower Point", "Chair 12 - Elk Highlands", "T-Bar 1 - Heritage", "T-Bar 2 - Bigfoot"] }] },
-            { id: "wildcat", name: "Wildcat", areas: [{ name: "All Lifts", lifts: ["Bobcat", "Snowbelt", "Snowcat", "Tomcat", "Wildcat Express"] }] },
-            { id: "5", name: "Winter Park", areas: [] },
-            { id: "80", name: "Crystal Mountain", areas: [] },
-        ];
+const resorts = [
+{ id: "abasin", name: "Arapaho Basin", areas: [{ name: "All Lifts", lifts: ["Beavers", "Black Mountain Express Lift", "Lazy J Tow", "Lenawee Express Lift", "Molly Hogan Lift", "Molly's Magic Carpet", "Pallavicini Lift", "Pika Place Carpet", "Zuma Lift"] }] },
+{ id: "alta", name: "Alta", areas: [{ name: "All Lifts", lifts: ["Collins", "Sunnyside", "Supreme", "Sugarloaf", "Wildcat"] }] },
+{ id: "alyeska", name: "Alyeska", areas: [{ name: "All Lifts", lifts: ["Aerial Tram", "Bear Cub Quad", "Chair 7", "Finnland", "Glacier Bowl", "Ted's Express", "Terrain Parks", "Wade's Way"] }] },
+{ id: "angel-fire", name: "Angel Fire", areas: [{ name: "All Lifts", lifts: ["Chile Express", "Dreamcatcher", "Lift #2", "Lift #3", "Rakes Rider", "Ski School Wondercarpet", "Southwest Flyer", "Tubing Hill Wondercarpet"] }] },
+{ id: "aspen-highlands", name: "Aspen Highlands", areas: [{ name: "All Lifts", lifts: ["Cloud Nine", "Deep Temerity", "Exhibition", "Loge Peak", "Thunderbowl"] }] },
+{ id: "aspen-mountain", name: "Aspen Mountain", areas: [{ name: "All Lifts", lifts: ["Ajax Express", "Bell Mountain", "F.I.S.", "Hero's", "Little Nell", "Ruthies", "Shadow Mountain", "Silver Queen Gondola"] }] },
+{ id: "attitash", name: "Attitash", areas: [{ name: "All Lifts", lifts: ["Abenaki Quad", "Flying Bear", "Flying Yankee", "Kachina", "Learning Center", "Progression Quad", "Snowbelt", "The Mountaineer"] }] },
+{ id: "beavercreek", name: "Beaver Creek", areas: [{ name: "All Lifts", lifts: ["Arrow Bahn Express", "Bachelor Gulch Express", "Bibber Bahn", "Birds of Prey Express", "Centennial Express", "Cinch Express", "Elkhorn Lift", "Grouse Mountain Express", "Haymeadow Express", "Highlands Lift", "Jitterbug", "Larkspur Express", "Lower BC Mtn Express", "Magic Carpet", "McCoy Park Express", "Ritz Bahn", "Reunion Lift", "Red Buffalo Express", "Riverfront Express Gondola", "Rose Bowl Express", "Snowflake", "Strawberry Park Express", "Trail Rider", "Upper BC Mtn Express", "Wagon Train"] }] },
+{ id: "berkshire-east", name: "Berkshire East", areas: [{ name: "All Lifts", lifts: ["Bobcat Magic Carpet", "Summit Quad", "T-Bar Express Quad", "Top Notch Double", "Wilderness Peak Quad"] }] },
+{ id: "57", name: "Bear Mountain", areas: [] },
+{ id: "big-white", name: "Big White", areas: [{ name: "All Lifts", lifts: ["Alpine T-Bar", "Black Forest Express Quad", "Bullet Express Quad", "Cliff Chair", "Falcon Double Chair", "Gem Lake Express Quad", "Kids Carpet", "Lara\u2019s Gondola (free access)", "Magic Carpet", "Magic Carpet 2.0", "Plaza Quad Chair", "Powder Quad Chair", "Ridge Rocket Express Quad", "Snow Ghost Express 6 Pack", "TELUS Park Chair", "Tube Park Lift"] }] },
+{ id: "bigsky", name: "Big Sky", areas: [
+{ name: "Cascade Area", lifts: ["Cascade 3", "Little Thunder 2"] },
+{ name: "Challenger Area", lifts: ["Challenger 3"] },
+{ name: "Dakota Area", lifts: ["Dakota 3"] },
+{ name: "Derringer Area", lifts: ["Derringer 4", "Jayhawk 3", "One&Only Gondola", "Pea Shooter Carpet", "Skiwee Carpet"] },
+{ name: "Explorer Area", lifts: ["Explorer Gondola"] },
+{ name: "Headwaters Area", lifts: ["Headwaters 2"] },
+{ name: "Iron Horse Area", lifts: ["Iron Horse 4"] },
+{ name: "Lone Moose Area", lifts: ["Lone Moose 3"] },
+{ name: "Lone Peak Area", lifts: ["Lone Peak Tram"] },
+{ name: "Lone Tree Area", lifts: ["Lone Tree 4"] },
+{ name: "Madison Area", lifts: ["Madison 8"] },
+{ name: "Pony Express Area", lifts: ["Pony Express 3"] },
+{ name: "Powder Seeker Area", lifts: ["Powder Seeker 6"] },
+{ name: "Ramcharger Area", lifts: ["Bear Back", "Ramcharger 8"] },
+{ name: "Shedhorn Area", lifts: ["Shedhorn 4"] },
+{ name: "Southern Comfort Area", lifts: ["Southern Comfort 4"] },
+{ name: "Spanish Peaks Area", lifts: ["Cabin 3", "Highlands 3", "Homer Poma", "Lewis and Clark 4", "Pull-Up Tow", "Sacajawea 3", "Spanish Peaks Carpet", "Spanish Peaks Carpet 2", "Tweener Poma"] },
+{ name: "Stagecoach Area", lifts: ["Stagecoach 2"] },
+{ name: "Swift Current Area", lifts: ["Bear Basin Carpet", "Beehive Basin Carpet", "Middle Basin Carpet", "Portable Park Tow", "Small Fry Carpet", "Swift Current 6"] },
+{ name: "Thunder Wolf Area", lifts: ["Thunder Wolf 4"] },
+{ name: "White Otter Area", lifts: ["White Otter 2"] }
+]},
+{ id: "3", name: "Blue", areas: [] },
+{ id: "bogusbasin", name: "Bogus Basin", areas: [{ name: "All Lifts", lifts: ["Bitterroot Chair", "Coach Chairlift", "Deer Point Express", "Discovery Carpet", "Easy Rider Carpet", "Explorer Carpet", "Morning Star Express", "Pine Creek Express", "Showcase Chair", "Superior Express"] }] },
+{ id: "boreal", name: "Boreal", areas: [{ name: "All Lifts", lifts: ["49er Triple Chairlift", "Accelerator Express Quad Charilift", "California Cruiser Quad Chairlift", "Castle Peak Quad Chairlift", "Cedar Ridge Triple Chairlift", "Discovery Carpet", "Lost Dutchman Triple Chairlift", "Tahoe Tubing Carpet"] }] },
+{ id: "breck", name: "Breckenridge", areas: [{ name: "All Lifts", lifts: ["6-Chair", "A-Chair", "Admin Carpet 1", "Admin Carpet 2", "Beaver Run SuperChair", "BR Adult Carpet", "BR Kids Carpet", "BreckConnect Gondola", "C-Chair", "Camelback Carpet", "Camelback Platter", "Colorado SuperChair", "E-Chair", "El Dorado Carpet", "El Dorado Platter", "Falcon SuperChair", "Five SuperChair", "Freedom SuperChair", "Horseshoe Bowl T-Bar", "Imperial SuperChair", "Independence SuperChair", "Kensho SuperChair", "Mercury SuperChair", "Peak 8 Kids Carpet 1", "Peak 8 Kids Carpet 2", "Peak 8 SuperConnect", "Quicksilver SuperChair", "Rip's Ride", "Rocky Mountain SuperChair", "Snowflake", "Trygve's Platter", "Tweener Carpet", "Village Carpet A", "Village Carpet B", "Zendo Chair"] }] },
+{ id: "brettonwoods", name: "Bretton Woods", areas: [{ name: "All Lifts", lifts: ["Bethlehem Express Quad II (BEQ II)", "Bretton Woods Skyway Gondola", "Learning Center Quad (LCQ)", "Red Carpet", "Rosebrook Summit Express Quad", "Telegraph T-Bar", "West Mountain Express", "Wonder Carpet (Ski School Only)", "Zephyr High Speed Quad"] }] },
+{ id: "brianhead", name: "Brian Head", areas: [{ name: "All Lifts", lifts: ["Alpen Glow, Chair 8", "Blackfoot, Chair 3", "Giant Steps Express, Chair 2", "Navajo Express, Chair 4", "Pioneer, Chair 6", "Roulette, Chair 5", "The Dunes, Chair 7", "Wildflower, Chair 1"] }] },
+{ id: "brighton", name: "Brighton", areas: [{ name: "All Lifts", lifts: ["Caterpillar", "Crest 6", "Explorer", "Great Western Express", "Majestic", "Milly Express", "Porcupine", "Snake Creek"] }] },
+{ id: "burke-mountain", name: "Burke Mountain", areas: [{ name: "All Lifts", lifts: ["J-Bar", "Magic Carpet", "Mid-Burke Express", "Sherburne Express", "T-Bar"] }] },
+{ id: "buttermilk", name: "Buttermilk", areas: [{ name: "All Lifts", lifts: ["Mighty Mite", "Panda Peak", "Summit Express", "Tiehack Express", "West Buttermilk Express"] }] },
+{ id: "camelback", name: "Camelback Mountain", areas: [{ name: "All Lifts", lifts: ["Bailey", "Beginner Carpet 3", "Beginner Carpet 4", "Beginner Carpet I", "Black Bear 6", "Coolmoor Carpet", "Meadows", "Raceway", "Stevenson Express", "Sunbowl", "The Glen", "Tubing I", "Tubing II"] }] },
+{ id: "cannon", name: "Cannon", areas: [{ name: "All Lifts", lifts: ["Brookside Triple", "Cannonball Quad Chair", "Eagle Cliff Triple Chair", "Huckerbrook Handle Tow", "Mittersill Double", "Peabody Express Quad", "Tuckerbrook Quad", "Valar T-Bar", "Zoomer Triple"] }] },
+{ id: "cataloochee", name: "Cataloochee", areas: [{ name: "All Lifts", lifts: ["Beginners Luck (Conveyor)", "Easy Way (Triple)", "Omigosh (Quad)", "Rock Island Line (Quad)", "Wolf Creek ( Conveyor)"] }] },
+{ id: "copper", name: "Copper Mountain", areas: [
+{ name: "Center", lifts: ["American Eagle", "American Flyer", "Excelerator"] },
+{ name: "East", lifts: ["Alpine", "Super Bee", "Tubing Hill"] },
+{ name: "West", lifts: ["Kokomo Express", "Lumberjack", "Rugrat", "Slingshot/Glide", "Timberline Express", "Woodward Express"] },
+{ name: "Copper Bowl", lifts: ["Black Jack", "Mountain Chief"] },
+{ name: "Tucker Mountain", lifts: ["Three Bears"] },
+{ name: "Spaulding & Resolution", lifts: ["Resolution", "Storm King"] },
+{ name: "Union Peak", lifts: ["Celebrity Ridge", "Rendezvous", "Sierra"] },
+{ name: "Beginner Learning", lifts: ["Easy Rider", "Gem", "Pitchfork"] }
+]},
+{ id: "cranmore-mountain", name: "Cranmore", areas: [{ name: "All Lifts", lifts: ["C-More Double", "Flying Carpet", "Giant Swing", "Lookout Triple", "Magic Carpet", "Mountain Coaster", "Schneider Triple", "Skimobile Express", "Soaring Eagle", "South Quad", "Tubing Park"] }] },
+{ id: "crested-butte", name: "Crested Butte", areas: [{ name: "All Lifts", lifts: ["Aspen Carpet", "East River Express", "Gold Link Lift", "High Lift T-Bar", "North Face Lift T-Bar", "Painter Boy Lift", "Paradise Express", "Peachtree Lift", "Pine Carpet", "Prospect Lift", "Red Lady Express", "Silver Queen Express", "Spruce Carpet", "Teocalli Lift", "West Wall Lift"] }] },
+{ id: "49", name: "Deer Valley", areas: [] },
+{ id: "eldora", name: "Eldora", areas: [{ name: "All Lifts", lifts: ["Alpenglow", "Caribou", "Corona", "EZ", "Indian Peaks", "Little Hawk", "Race", "Sundance", "Sunkid", "Tenderfoot"] }] },
+{ id: "grand-targhee", name: "Grand Targhee", areas: [{ name: "All Lifts", lifts: ["Blackfoot", "Colter", "Dreamcatcher", "Huckleberry", "Sacajawea", "Shoshone"] }] },
+{ id: "gunstock", name: "Gunstock", areas: [{ name: "All Lifts", lifts: ["E.Z. Carpet", "Panorama", "Penny Pitou Silver Medal", "Pistol", "Ramrod", "Tiger", "Tubing Carpet", "Wonder Carpet"] }] },
+{ id: "heavenly", name: "Heavenly", areas: [{ name: "All Lifts", lifts: ["Bear Cave", "Big Easy", "Boulder", "Canyon", "Comet", "Dipper", "Enchanted Forest", "First Ride", "Galaxy", "Gondola", "Groove", "Gunbarrel", "Mott", "North Bowl", "Olympic", "Patsy's", "Pioneer", "Powderbowl", "Red Fir", "Sky", "Stagecoach", "Tamarack", "The Meadow Carpet", "The Tram", "Tube Lift", "World Cup"] }] },
+{ id: "hoodoo", name: "Hoodoo", areas: [{ name: "All Lifts", lifts: ["BIG GREEN MACHINE", "EASY RIDER", "ED", "HAROLD'S MAGIC CARPET", "HODAG", "LIFT", "MANZANITA"] }] },
+{ id: "hunter", name: "Hunter Mountain", areas: [{ name: "All Lifts", lifts: ["20th Century (C Lift)", "Broadway Express", "Discovery Carpet", "F Lift", "Frostland Carpet", "H Lift", "Hunter East Carpet", "Kaatskill Flyer", "Northern Express", "Otis Quad", "Tubing Carpet", "Zephyr Express"] }] },
+{ id: "jacksonhole", name: "Jackson Hole", areas: [{ name: "Lifts And Trams", lifts: ["Aerial Tram", "Apres Vous Quad", "Bridger Gondola", "Casper Quad", "Eagle's Rest Quad", "Marmot Double", "Moose Creek Quad", "Sublette Quad", "Sweetwater Gondola", "Teewinot Quad", "Teton Quad", "Thunder Quad", "Union Pass Quad"] }] },
+{ id: "jay-peak", name: "Jay Peak", areas: [{ name: "All Lifts", lifts: ["Aerial Tram", "Bonaventure Quad", "Flyer Quad", "Jet Triple", "Metro Quad", "Stateside Carpet", "Taxi Quad", "Tramside Carpet", "Village Double"] }] },
+{ id: "59", name: "June Mountain", areas: [] },
+{ id: "keystone", name: "Keystone", areas: [{ name: "All Lifts", lifts: ["A-51", "Bergman Express", "Cadillac", "Discovery", "Double Barrel 1", "Double Barrel 2", "Kokomo", "Mid-Station Ski School", "Montezuma Express", "Outback Express", "Outpost Gondola", "Peru Express", "Ranger", "River Run Gondola", "Ruby Express", "Santiago Express", "Summit Express", "Sun Kid", "Triangle", "Tubing Hill", "Wayback"] }] },
+{ id: "killington", name: "Killington", areas: [{ name: "All Lifts", lifts: ["Bear Mountain Quad", "Canyon Quad", "K-1 Express Gondola", "Learn To Carpet", "Needles Eye Express Quad", "Northbrook Quad", "North Ridge Quad", "Progression Carpet I", "Ramshead Express Quad", "Skye Peak Express Quad", "Skyeship Express Gondola Stage I", "Skyeship Express Gondola Stage II", "Snowdon Six Express", "Snowdon Triple", "Snowshed  Double", "Snowshed Express Quad", "South Ridge Quad", "Sunrise Village Triple", "Superstar Six"] }] },
+{ id: "king-pine", name: "King Pine", areas: [{ name: "All Lifts", lifts: ["Bear Rug Carpet", "Black Bear Triple", "Cubby Tow", "Polar Bear Triple", "Powder Bear Triple"] }] },
+{ id: "kirkwood", name: "Kirkwood", areas: [{ name: "All Lifts", lifts: ["#1 Snowkirk", "#2 Caples Crest", "#3 Iron Horse", "#4 Sunrise", "#5 Solitude", "#6 Cornice Express", "#7 TC Express", "#9 Bunny", "#10 The Wall", "#11 The Reut", "#12 Ski School Magic Carpet", "#13 Public Magic Carpet", "#14 Vista T-Bar"] }] },
+{ id: "loon", name: "Loon Mountain", areas: [
+{ name: "Loon Peak", lifts: ["East Basin Double", "Little Sister Double", "Seven Brothers Express Quad", "White Mountain Express Gondola"] },
+{ name: "North Peak", lifts: ["North Peak Express Quad"] },
+{ name: "South Peak", lifts: ["Lincoln Express Quad", "River's Edge Double", "Timbertown Quad", "Tote Road Connector"] },
+{ name: "West Basin", lifts: ["Children's Center Carpet", "Kancamagus 8", "Kissin' Cousin Double", "Little Sass Carpet", "Sarsaparilla Carpet"] }
+]},
+{ id: "mad-river-glen", name: "Mad River Glen", areas: [{ name: "All Lifts", lifts: ["Birdland Double Chair", "Callie's Corner Handle Tow", "Practice Slope Chair", "Single Chair", "Sunnyside Double Chair"] }] },
+{ id: "60", name: "Mammoth Mountain", areas: [] },
+{ id: "monarch", name: "Monarch Mountain", areas: [{ name: "All Lifts", lifts: ["Breezeway", "Caterpillar", "Garfield", "Kaleidoscope", "Panorama", "Pioneer", "Safari", "Tomichi", "Tumbelina"] }] },
+{ id: "mount-sunapee", name: "Mount Sunapee", areas: [{ name: "All Lifts", lifts: ["Clipper Ship Quad", "Flying Carpet", "Middle Carpet", "North Peak Triple", "Small Carpet", "Spruce Triple", "Sunapee Express", "Sunbowl Express"] }] },
+{ id: "mountsnow", name: "Mount Snow", areas: [{ name: "All Lifts", lifts: ["Apollo", "Bear Trap", "Bluebird Express", "Canyon Express", "Challenger", "Covered Bridge", "Discovery Shuttle", "Gemini", "Grand Summit Express", "Grommet", "Heavy Metal", "Mercury", "Nitro Express", "Outpost", "Seasons", "Sunbrook Express", "Sundance Express", "Voyager"] }] },
+{ id: "mtbachelor", name: "Mount Bachelor", areas: [{ name: "All Lifts", lifts: ["Alpenglow", "Chipmunk Carpet", "Cloudchaser", "Early Riser", "Lava Tube", "Little Pine", "Northwest", "Outback", "Pine Marten", "Rainbow", "Red Chair", "Skyliner Express", "Summit", "Sunrise"] }] },
+{ id: "mtbrighton", name: "Mt Brighton", areas: [{ name: "All Lifts", lifts: ["Big Riskey", "Blue Sky", "Bunny", "Challenge", "Cheetah", "Chicken Chute", "Crosscut", "Easy Street", "Flatiron", "Gasoline Alley", "Golden Eagle", "Gopher", "Grand River", "Hare", "Larkspur", "Ledges", "Ore Creek", "Osprey", "Perk\u2019s Folly", "Riglet Park", "Ryan\u2019s Run", "Sawtooth Ridge", "Sidewinder", "Snowshoe", "Sunrise Bowl", "Thalacker\u2019s"] }] },
+{ id: "mthigh", name: "Mountain High", areas: [{ name: "All Lifts", lifts: ["Blue Ridge Express", "Competition", "Conquest", "Coyote", "Discovery", "Easy Rider", "Exhibition", "Mountain High Express", "Moving Carpet East", "Moving Carpet West Long", "Moving Carpet West Short", "Roadrunner", "Snowflake"] }] },
+{ id: "mtrose", name: "Mount Rose", areas: [{ name: "All Lifts", lifts: ["Chuter", "Galena", "Lakeview Express", "Magic", "Northwest Express", "Wizard", "Zephyr Express"] }] },
+{ id: "northstar", name: "Northstar", areas: [{ name: "All Lifts", lifts: ["Arrow Express", "Backside Express", "Big Springs Express Gondola", "Comstock Express", "Hemlock Carpet", "Highlands Gondola", "Jeffrey Pines Carpet", "Juniper Carpet", "Lookout Link Platter", "Martis Camp Express", "Promised Land Express", "Rendezvous Triple", "Sugar Pine Carpet", "Tahoe Zephyr Express", "The Big Easy Quad", "The Spruces Carpet", "Timberline Triple", "Village Express", "Vista Express"] }] },
+{ id: "okemo", name: "Okemo", areas: [{ name: "All Lifts", lifts: ["Black Ridge Triple", "Coleman Brook Express Quad", "Evergreen Summit Express", "F-10 Carpet", "Glades Peak Quad", "Morning Star Triple", "Orion's Belt Carpet", "Quantum Six", "Sachem Quad", "Ski and Ride School Carpet", "Skywalker Carpet", "Snowstar Carpet", "Solitude Express Quad", "South Face Express Quad", "South Ridge Quad A", "South Ridge Quad B", "Stargazer", "Starlight", "Sunburst Six", "Sunshine Quad", "The Pull"] }] },
+{ id: "61", name: "Palisades Tahoe/Apline Meadows", areas: [] },
+{ id: "parkcity", name: "Park City", areas: [{ name: "All Lifts", lifts: ["3 Kings Lift", "9990 Express", "Bonanza Lift", "Cabriolet", "Crescent Lift", "Day Break", "Dreamcatcher", "Dreamscape", "Eagle Lift", "Eaglet Lift", "First Time Lift", "Flat Iron", "Frostwood Gondola", "High Meadow", "Iron Mtn. Express", "Jupiter Lift", "King Con Lift", "McConkey's Lift", "Mine Cart", "Motherlode Lift", "Mule Train", "Orange Bubble Express", "Over and Out", "PayDay Lift", "Peak 5", "Pioneer Lift", "Quicksilver Canyons Side", "Quicksilver MV Side", "Red Pine Gondola", "Rip Cord", "Saddleback Express", "Silver Lining", "Silver Star Lift", "Silverlode Lift", "Shortcut", "Sun Peak Express", "Sunrise Gondola", "Super Condor Express", "Sweet Pea", "Thaynes Lift", "Timberline", "Tombstone Express", "Town Lift"] }] },
+{ id: "pico", name: "Pico Mountain", areas: [{ name: "All Lifts", lifts: ["Bonanza Carpet", "Golden Express Quad", "Knomes Knoll Triple", "Little Pico Triple", "Outpost Double", "Summit Express Quad"] }] },
+{ id: "pleasant-mountain", name: "Pleasant Mountain", areas: [{ name: "All Lifts", lifts: ["Li'l Pine Beginner Carpet", "Pine Quad", "Rabbit Run", "Snow Pine Carpet", "Summit Express", "Sunnyside Triple"] }] },
+{ id: "red-lodge-mountain", name: "Red Lodge Mountain", areas: [{ name: "All Lifts", lifts: ["Chair Status"] }] },
+{ id: "65", name: "Solitude", areas: [] },
+{ id: "168", name: "Schweitzer", areas: [] },
+{ id: "sierra", name: "Sierra at Tahoe", areas: [{ name: "All Lifts", lifts: ["Blizzard Mountain Tubing", "Easy Rider Express", "El Dorado", "Fuego Carpet", "Grandview Express", "Nob Hill", "Puma", "Rock Garden", "Short Stuff", "Slider Carpet", "Tahoe King", "Thunder Gulch Carpet (Ski/Ride School Only)", "West Bowl Express", "Wild Mountain Carpet (Ski/Ride School Only)"] }] },
+{ id: "smuggs", name: "Smugglers' Notch", areas: [{ name: "All Lifts", lifts: ["Madonna I Lift", "Madonna II Lift", "Mogul Mouse's Magic Lift", "Morse Highlands Lift", "Sir Henry's Glider Lift", "Sterling Lift", "Sterling T-Bar Lift", "Village Lift"] }] },
+{ id: "snowbasin", name: "Snowbasin", areas: [{ name: "All Lifts", lifts: ["Allen Peak Tram", "Becker", "DeMoisy Express", "Grizzly Carpet", "John Paul Express", "Littlecat Express", "Middle Bowl Express", "Needles Gondola", "Porcupine", "Strawberry Gondola", "Wildcat Express", "Wildcat Handle Tow", "Wildflower Carpet"] }] },
+{ id: "snowbird", name: "Snowbird", areas: [
+{ name: "Gad Valley", lifts: ["Baby Thunder", "Baby Thunder Conveyor", "Gad 2", "Gadzoom", "Little Cloud", "Mid-Gad", "Wilbere"] },
+{ name: "Mineral Basin", lifts: ["Baldy", "Mineral Basin", "Peruvian Tunnel"] },
+{ name: "Peruvian Gulch", lifts: ["Aerial Tram", "Chickadee", "Chickadee Conveyor", "Peruvian"] }
+]},
+{ id: "2", name: "Snowshoe", areas: [] },
+{ id: "snowmass", name: "Snowmass", areas: [{ name: "All Lifts", lifts: ["Alpine Springs", "Assay Hill", "Assay Hill Carpet", "Bear Bottom Carpet", "Big Burn", "Campground", "Cirque Surface Lift", "Coney Express", "Elk Camp Chairlift", "Elk Camp Gondola", "High Alpine", "Meadows Carpet", "Meadows Chairlift", "Sam's Knob", "Scooper Surface Lift", "Sheer Bliss", "Sky Cab Gondola", "Treehouse Carpet", "Two Creeks", "Village Express"] }] },
+{ id: "173", name: "Snow Valley", areas: [] },
+{ id: "58", name: "Snow Summit", areas: [] },
+{ id: "6", name: "Steamboat", areas: [] },
+{ id: "stevens", name: "Stevens Pass", areas: [{ name: "All Lifts", lifts: ["Brooks Express", "Daisy", "Double Diamond", "Hogsback Express", "Jupiter Express", "Kehr's", "Marmot Carpet", "Pika Carpet", "Rope Tow 1", "Rope Tow 2", "Seventh Heaven", "Skyline Express", "Southern Cross", "Tye Mill"] }] },
+{ id: "stowe", name: "Stowe", areas: [{ name: "All Lifts", lifts: ["Adventure Carpet", "Adventure Triple", "FourRunner Quad", "Lookout Double", "Mansfield Gondola", "Meadows Carpet", "Meadows Quad", "Over Easy Gondola", "Sensation Quad", "Sunny Spruce Quad", "Sunrise Lift", "Toll House Double"] }] },
+{ id: "1", name: "Stratton", areas: [] },
+{ id: "sugarbowl", name: "Sugar Bowl", areas: [{ name: "All Lifts", lifts: ["Christmas Tree Express", "Crow's Peak", "Flume Carpet", "Gondola", "Jerome Hill Express", "Mt. Disney Express", "Mt. Judah Express", "Mt. Lincoln Express", "Nob Hill", "Summit Chair", "Village Tow", "White Pine"] }] },
+{ id: "70", name: "Sugarbush", areas: [] },
+{ id: "sugarloaf", name: "Sugarloaf", areas: [
+{ name: "Base Area", lifts: ["Moose-calator", "Sawduster", "Skidway", "Snubber"] },
+{ name: "Double Runner", lifts: ["Double Runner East", "Double Runner West"] },
+{ name: "King Pine", lifts: ["King Pine"] },
+{ name: "Skyline", lifts: ["#3 T-Bar/Bateau", "Skyline"] },
+{ name: "SuperQuad", lifts: ["CVA/Colby T-Bar", "SuperQuad"] },
+{ name: "Timberline", lifts: ["Timberline"] },
+{ name: "West Mountain", lifts: ["Bucksaw Express", "West Mountain"] },
+{ name: "Whiffletree", lifts: ["Whiffletree SuperQuad"] }
+]},
+{ id: "sun-peaks", name: "Sun Peaks", areas: [{ name: "All Lifts", lifts: ["Burfield Chairlift", "Crystal Chairlift", "Elevation Chairlift", "Learning Zone Carpet", "Morrisey Express Chairlift", "Morrisey Platter", "Orient Chairlift", "Sunburst Express Chairlift", "Sundance Express Chairlift", "Tube Time Carpet", "Village Carpet", "Village Platter", "West Bowl Express Chairlift"] }] },
+{ id: "sunday-river", name: "Sunday River", areas: [{ name: "All Lifts", lifts: ["Alera Group Competition Lift #5", "Aurora Peak Quad #12", "Barker 6 #1", "Chondola #7", "Jordan 8 Lift #14", "Jordan Mountain Double #13", "Little White Cap Quad #11", "Locke Mountain Triple #4", "Lower Sundance Surface Lift #16", "Merrill Hill Triple #19", "Middle Sundance Surface Lift #17", "North Peak Express #6", "OZ Quad #15", "Quantum Leap Triple #3", "South Ridge Express #2", "Spruce Peak Triple #8", "Upper Sundance Surface Lift #18", "White Cap Quad #9", "White Heat Quad #10"] }] },
+{ id: "sunvalley", name: "Sun Valley", areas: [{ name: "All Lifts", lifts: ["Broadway", "Challenger", "Christmas", "Dollar", "Elkhorn", "Flying Squirrel", "Frenchman's", "Half Dollar", "Kinderspielplatz", "Lookout", "Lookout Express", "Mayday", "Quarter Dollar", "River Run", "Roundhouse Express", "Seattle Ridge", "The Accelerator"] }] },
+{ id: "tahoe-donner", name: "Tahoe Donner", areas: [{ name: "All Lifts", lifts: ["Caterpillar Conveyor", "Eagle Rock Chairlift", "Learning Center Conveyor", "Magic Carpet", "Snowbird Chairlift"] }] },
+{ id: "telluride", name: "Telluride", areas: [{ name: "All Lifts", lifts: ["Adult Magic Carpet", "Apex Lift", "Childrens Magic Carpet", "Chondola", "Free Gondola \u2013 Town to MV", "Gold Hill Express", "Lift 7", "Lynx", "North Meadows Carpet", "Oak Street Lift", "Plunge Lift", "Polar Queen Express", "Prospect Express", "Revelation Lift", "Sunshine Express", "UTE Park", "Village Express"] }] },
+{ id: "tremblant", name: "Mont Tremblant", areas: [{ name: "All Lifts", lifts: ["Cabriolet", "Duncan Express", "Edge", "Expo Express", "Flying Mile", "Le Soleil", "Lowell Thomas Express", "Porte du Soleil", "Tapis Magique \u00c9quilibre 1", "Tapis Magique \u00c9quilibre 2", "Tapis Magique On\u00e9sime", "T\u00e9l\u00e9cabine Casino Express", "T\u00e9l\u00e9cabine Express", "TGV"] }] },
+{ id: "vail", name: "Vail", areas: [{ name: "All Lifts", lifts: ["Avanti Express #2", "Black Forest #27", "Born Free Express #8", "Cascade Village #20", "Eagle Bahn Gondola #19", "Earl's Express #38", "Elvis Bahn #25", "Game Creek Express #7", "Golden Peak T-Bar", "Gondola One", "Gopher Hill #12", "High Noon Express #5", "Highline Express #10", "Lightning Coyote #18", "Lionshead Magic Carpet #34", "Little Eagle #15", "Mongolia Platter #22", "Mountaintop Express #4", "Northwoods Express #11", "Orient Express #21", "Patty Bahn", "Pete's Express #39", "Pride Express #26", "Riva Bahn Express #6", "Rip's Ride Carpet #29", "Skyline Express #37", "Sourdough Express #14", "Sun Down Express #17", "Sun Up Express #9", "Tea Cup Express #36", "Thunder Cat Carpet #35", "Wapiti Platter #24", "Wildwood Express #3"] }] },
+{ id: "waterville", name: "Waterville Valley", areas: [{ name: "All Lifts", lifts: ["Exhibition T-Bar", "Green Peak Triple", "High Country", "Lower Meadows", "Lower Pasture Carpet", "Northside", "Sunny Side", "Tecumseh Express", "Upper Pasture Carpet", "Valley Run Quad"] }] },
+{ id: "whistler-blackcomb", name: "Whistler Blackcomb", areas: [{ name: "All Lifts", lifts: ["7th Heaven Express", "Big Red Express", "Blackcomb Gondola Lower", "Blackcomb Gondola Upper", "Bubly Tube Park", "Catskinner Express", "Creekside Gondola", "Crystal Ridge Express", "Emerald 6 Express", "Excalibur Gondola Lower", "Excalibur Gondola Upper", "Excelerator Express", "Fitzsimmons Express", "Franz's Chair", "Garbanzo Express", "Glacier Express", "Harmony 6 Express", "Horstman T-Bar", "Jersey Cream Express", "Magic Chair", "Olympic Chair", "Peak 2 Peak Gondola", "Peak Express", "Showcase T-Bar", "Symphony Express", "T-Bars", "Whistler Village Gondola Lower", "Whistler Village Gondola Upper"] }] },
+{ id: "whitefish", name: "Whitefish Mountain", areas: [{ name: "All Lifts", lifts: ["2 Easy Carpet", "Big Easy Carpet", "Chair 1 - Big Mountain Express", "Chair 2 - Swift Creek Express", "Chair 3 - Tenderfoot", "Chair 4 - Snow Ghost Express", "Chair 5 - East Rim", "Chair 6 - Base Lodge", "Chair 7 - Big Creek Express", "Chair 8 - Hellroaring", "Chair 9 - Easy Rider", "Chair 10 - Bad Rock", "Chair 11 - Flower Point", "Chair 12 - Elk Highlands", "T-Bar 1 - Heritage", "T-Bar 2 - Bigfoot"] }] },
+{ id: "wildcat", name: "Wildcat", areas: [{ name: "All Lifts", lifts: ["Bobcat", "Snowbelt", "Snowcat", "Tomcat", "Wildcat Express"] }] },
+{ id: "5", name: "Winter Park", areas: [] },
+{ id: "80", name: "Crystal Mountain", areas: [] },
+];
 
-        resorts.sort((a, b) => a.name.localeCompare(b.name));
+resorts.sort((a, b) => a.name.localeCompare(b.name));
 
-        window.onload = () => {
-            let uniqueID = localStorage.getItem("mySkiID");
-            if (!uniqueID) {
-                const chars = 'abcdefghjkmnpqrstuvwxyz23456789';
-                uniqueID = '';
-                for (let i = 0; i < 5; i++) { uniqueID += chars.charAt(Math.floor(Math.random() * chars.length)); }
-                localStorage.setItem("mySkiID", uniqueID);
-            }
-            document.getElementById("userSkiID").innerText = uniqueID;
+window.onload = () => {
+let uniqueID = localStorage.getItem("mySkiID");
+if (!uniqueID) {
+const chars = 'abcdefghjkmnpqrstuvwxyz23456789';
+uniqueID = '';
+for (let i = 0; i < 5; i++) { uniqueID += chars.charAt(Math.floor(Math.random() * chars.length)); }
+localStorage.setItem("mySkiID", uniqueID);
+}
+document.getElementById("userSkiID").innerText = uniqueID;
 
-            const select = document.getElementById("resortSelect");
-            resorts.forEach(r => {
-                let opt = document.createElement("option");
-                opt.value = r.id;
-                opt.innerText = r.name;
-                select.appendChild(opt);
-            });
+const select = document.getElementById("resortSelect");
+resorts.forEach(r => {
+let opt = document.createElement("option");
+opt.value = r.id;
+opt.innerText = r.name;
+select.appendChild(opt);
+});
 
-            // Load saved watch list from localStorage
-            const saved = localStorage.getItem("watchList");
-            if (saved) {
-                try { watchList = JSON.parse(saved); } catch(e) { watchList = []; }
-            }
-            renderWatchList();
+// Load saved watch list from localStorage
+const saved = localStorage.getItem("watchList");
+if (saved) {
+try { watchList = JSON.parse(saved); } catch(e) { watchList = []; }
+}
+renderWatchList();
 
-            const savedState = localStorage.getItem("alertActive");
-            setAlertState(savedState === null ? true : savedState === "true", false);
-        };
+const savedState = localStorage.getItem("alertActive");
+setAlertState(savedState === null ? true : savedState === "true", false);
+};
 
-        function renderWatchList() {
-            const container = document.getElementById("watchList");
-            if (watchList.length === 0) {
-                container.innerHTML = '<div class="loading-text">Press the <b>Add Resort</b> button bellow to track 1 or more resorts.</div>';
-                return;
-            }
-            container.innerHTML = watchList.map((w, i) => `
-                <div class="watch-item">
-                    <div class="watch-item-info">
-                        <div class="watch-item-name">🏔️ ${w.resortName}</div>
-                        <div class="watch-item-lifts">${w.lifts.length} lift${w.lifts.length !== 1 ? 's' : ''} watched</div>
-                    </div>
-                    <button class="watch-item-remove" onclick="removeFromWatchList(${i})">✕ Remove</button>
-                </div>
-            `).join('');
-        }
+function renderWatchList() {
+const container = document.getElementById("watchList");
+if (watchList.length === 0) {
+container.innerHTML = '<div class="loading-text">No resorts added yet.</div>';
+return;
+}
+container.innerHTML = watchList.map((w, i) => `
+               <div class="watch-item">
+                   <div class="watch-item-info">
+                       <div class="watch-item-name">🏔️ ${w.resortName}</div>
+                       <div class="watch-item-lifts">${w.lifts.length} lift${w.lifts.length !== 1 ? 's' : ''} watched</div>
+                   </div>
+                   <button class="watch-item-remove" onclick="removeFromWatchList(${i})">✕ Remove</button>
+               </div>
+           `).join('');
+}
 
-        function toggleAddForm() {
-            const form = document.getElementById("addResortForm");
-            const isVisible = form.style.display === 'block';
-            form.style.display = isVisible ? 'none' : 'block';
-            if (!isVisible) {
-                document.getElementById("resortSelect").value = "";
-                document.getElementById("liftList").innerHTML = '<div class="loading-text">Please select a mountain above.</div>';
-                document.getElementById("addToWatchBtn").disabled = true;
-                document.getElementById("addToWatchBtn").style.opacity = "0.5";
-                resetSelectAll();
-            }
-        }
+function toggleAddForm() {
+const form = document.getElementById("addResortForm");
+const isVisible = form.style.display === 'block';
+form.style.display = isVisible ? 'none' : 'block';
+if (!isVisible) {
+document.getElementById("resortSelect").value = "";
+document.getElementById("liftList").innerHTML = '<div class="loading-text">Please select a mountain above.</div>';
+document.getElementById("addToWatchBtn").disabled = true;
+document.getElementById("addToWatchBtn").style.opacity = "0.5";
+resetSelectAll();
+}
+}
 
-        function removeFromWatchList(index) {
-            watchList.splice(index, 1);
-            localStorage.setItem("watchList", JSON.stringify(watchList));
-            renderWatchList();
-        }
+function removeFromWatchList(index) {
+watchList.splice(index, 1);
+localStorage.setItem("watchList", JSON.stringify(watchList));
+renderWatchList();
+}
 
-        function copyCode() {
-            const code = document.getElementById("userSkiID").innerText;
-            navigator.clipboard.writeText(code).then(() => {
-                alert("✅ Code copied: " + code);
-            }).catch(() => {
-                alert("Code: " + code);
-            });
-        }
+function copyCode() {
+const code = document.getElementById("userSkiID").innerText;
+navigator.clipboard.writeText(code).then(() => {
+alert("✅ Code copied: " + code);
+}).catch(() => {
+alert("Code: " + code);
+});
+}
 
-        async function fetchLifts() {
-            const resortSelect = document.getElementById("resortSelect");
-            const resortId = resortSelect.value;
-            const selectedResort = resorts.find(r => String(r.id) === String(resortId));
-            const liftListDiv = document.getElementById("liftList");
-            const addBtn = document.getElementById("addToWatchBtn");
+async function fetchLifts() {
+const resortSelect = document.getElementById("resortSelect");
+const resortId = resortSelect.value;
+const selectedResort = resorts.find(r => String(r.id) === String(resortId));
+const liftListDiv = document.getElementById("liftList");
+const addBtn = document.getElementById("addToWatchBtn");
 
-            liftListDiv.innerHTML = '<div class="loading-text">🔄 Loading lifts...</div>';
-            addBtn.disabled = true;
-            addBtn.style.opacity = "0.5";
-            resetSelectAll();
+liftListDiv.innerHTML = '<div class="loading-text">🔄 Loading lifts...</div>';
+addBtn.disabled = true;
+addBtn.style.opacity = "0.5";
+resetSelectAll();
 
-            if (selectedResort.areas && selectedResort.areas.length > 0) {
-                let htmlContent = "";
-                selectedResort.areas.forEach(area => {
-                    htmlContent += `<div class="section-title">${area.name}</div>`;
-                    area.lifts.forEach(name => {
-                        htmlContent += `
-                            <div class="lift-item">
-                                <input type="checkbox" value="${name}">
-                                <label>${name}</label>
-                            </div>`;
-                    });
-                });
-                liftListDiv.innerHTML = htmlContent;
-                addBtn.disabled = false;
-                addBtn.style.opacity = "1";
-                return;
-            }
+if (selectedResort.areas && selectedResort.areas.length > 0) {
+let htmlContent = "";
+selectedResort.areas.forEach(area => {
+htmlContent += `<div class="section-title">${area.name}</div>`;
+area.lifts.forEach(name => {
+htmlContent += `
+                           <div class="lift-item">
+                               <input type="checkbox" value="${name}">
+                               <label>${name}</label>
+                           </div>`;
+});
+});
+liftListDiv.innerHTML = htmlContent;
+addBtn.disabled = false;
+addBtn.style.opacity = "1";
+return;
+}
 
-            try {
-                const response = await fetch(`https://mtnpowder.com/feed?resortId=${resortId}`);
-                const data = await response.json();
-                let htmlContent = "";
-                let foundLifts = false;
-                if (data.MountainAreas && data.MountainAreas.length > 0) {
-                    data.MountainAreas.forEach(area => {
-                        if (area.Lifts && area.Lifts.length > 0) {
-                            foundLifts = true;
-                            htmlContent += `<div class="section-title">${area.Name}</div>`;
-                            const sorted = area.Lifts.slice().sort((a, b) => a.Name.localeCompare(b.Name));
-                            sorted.forEach(lift => {
-                                htmlContent += `
-                                    <div class="lift-item">
-                                        <input type="checkbox" value="${lift.Name}">
-                                        <label>${lift.Name}</label>
-                                    </div>`;
-                            });
-                        }
-                    });
-                }
-                liftListDiv.innerHTML = foundLifts ? htmlContent : '<div class="loading-text">⚠️ No lift data found.</div>';
-                addBtn.disabled = false;
-                addBtn.style.opacity = "1";
-            } catch (error) {
-                liftListDiv.innerHTML = '<div class="loading-text" style="color:red;">❌ Failed to load lifts.</div>';
-            }
-        }
+try {
+const response = await fetch(`https://mtnpowder.com/feed?resortId=${resortId}`);
+const data = await response.json();
+let htmlContent = "";
+let foundLifts = false;
+if (data.MountainAreas && data.MountainAreas.length > 0) {
+data.MountainAreas.forEach(area => {
+if (area.Lifts && area.Lifts.length > 0) {
+foundLifts = true;
+htmlContent += `<div class="section-title">${area.Name}</div>`;
+const sorted = area.Lifts.slice().sort((a, b) => a.Name.localeCompare(b.Name));
+sorted.forEach(lift => {
+htmlContent += `
+                                   <div class="lift-item">
+                                       <input type="checkbox" value="${lift.Name}">
+                                       <label>${lift.Name}</label>
+                                   </div>`;
+});
+}
+});
+}
+liftListDiv.innerHTML = foundLifts ? htmlContent : '<div class="loading-text">⚠️ No lift data found.</div>';
+addBtn.disabled = false;
+addBtn.style.opacity = "1";
+} catch (error) {
+liftListDiv.innerHTML = '<div class="loading-text" style="color:red;">❌ Failed to load lifts.</div>';
+}
+}
 
-        function addToWatchList() {
-            const resortId = document.getElementById("resortSelect").value;
-            const selectedResort = resorts.find(r => String(r.id) === String(resortId));
-            if (!resortId || !selectedResort) { alert("⚠️ Please select a mountain first."); return; }
+function addToWatchList() {
+const resortId = document.getElementById("resortSelect").value;
+const selectedResort = resorts.find(r => String(r.id) === String(resortId));
+if (!resortId || !selectedResort) { alert("⚠️ Please select a mountain first."); return; }
 
-            let selected = [];
-            document.querySelectorAll('#liftList input[type=checkbox]:checked').forEach(box => {
-                selected.push(box.value);
-            });
-            if (selected.length === 0) { alert("⚠️ Please select at least one lift."); return; }
+let selected = [];
+document.querySelectorAll('#liftList input[type=checkbox]:checked').forEach(box => {
+selected.push(box.value);
+});
+if (selected.length === 0) { alert("⚠️ Please select at least one lift."); return; }
 
-            // Check if already watching this resort
-            const existing = watchList.findIndex(w => String(w.resortId) === String(resortId));
-            if (existing >= 0) {
-                if (!confirm(`You're already watching ${selectedResort.name}. Replace it?`)) return;
-                watchList.splice(existing, 1);
-            }
+// Check if already watching this resort
+const existing = watchList.findIndex(w => String(w.resortId) === String(resortId));
+if (existing >= 0) {
+if (!confirm(`You're already watching ${selectedResort.name}. Replace it?`)) return;
+watchList.splice(existing, 1);
+}
 
-            watchList.push({ resortId: resortId, resortName: selectedResort.name, lifts: selected });
-            localStorage.setItem("watchList", JSON.stringify(watchList));
-            renderWatchList();
-            toggleAddForm();
-        }
+watchList.push({ resortId: resortId, resortName: selectedResort.name, lifts: selected });
+localStorage.setItem("watchList", JSON.stringify(watchList));
+renderWatchList();
+toggleAddForm();
+}
 
-        let allSelected = false;
-        function resetSelectAll() {
-            allSelected = false;
-            document.querySelector('.select-all-btn').innerText = "Select All";
-        }
-        function toggleSelectAll() {
-            const checkboxes = document.querySelectorAll('#liftList input[type="checkbox"]');
-            allSelected = !allSelected;
-            checkboxes.forEach(box => box.checked = allSelected);
-            document.querySelector('.select-all-btn').innerText = allSelected ? "Deselect All" : "Select All";
-        }
+let allSelected = false;
+function resetSelectAll() {
+allSelected = false;
+document.querySelector('.select-all-btn').innerText = "Select All";
+}
+function toggleSelectAll() {
+const checkboxes = document.querySelectorAll('#liftList input[type="checkbox"]');
+allSelected = !allSelected;
+checkboxes.forEach(box => box.checked = allSelected);
+document.querySelector('.select-all-btn').innerText = allSelected ? "Deselect All" : "Select All";
+}
 
-        let isPaused = false;
-        function setAlertState(active, sendToServer = true) {
-            const uniqueID = document.getElementById("userSkiID").innerText;
-            isPaused = !active;
-            localStorage.setItem("alertActive", active ? "true" : "false");
-            document.getElementById("btnResume").style.opacity = active ? "1" : "0.35";
-            document.getElementById("btnPause").style.opacity = active ? "0.35" : "1";
-            if (sendToServer) {
-                const payload = `${uniqueID}|${active ? "RESUME" : "PAUSE"}|`;
-                sendToCloud(payload);
-            }
-        }
+let isPaused = false;
+function setAlertState(active, sendToServer = true) {
+const uniqueID = document.getElementById("userSkiID").innerText;
+isPaused = !active;
+localStorage.setItem("alertActive", active ? "true" : "false");
+document.getElementById("btnResume").style.opacity = active ? "1" : "0.35";
+document.getElementById("btnPause").style.opacity = active ? "0.35" : "1";
+if (sendToServer) {
+const payload = `${uniqueID}|${active ? "RESUME" : "PAUSE"}|`;
+sendToCloud(payload);
+}
+}
 
-        function saveAll() {
-            const uniqueID = document.getElementById("userSkiID").innerText;
-            if (watchList.length === 0) { alert("⚠️ Please add at least one resort first."); return; }
+function saveAll() {
+const uniqueID = document.getElementById("userSkiID").innerText;
+if (watchList.length === 0) { alert("⚠️ Please add at least one resort first."); return; }
 
-            // Format: usercode|MULTIUPDATE|resort1:lift1~~lift2~~lift3;;resort2:lift1~~lift2
-            const parts = watchList.map(w => `${w.resortId}:${w.lifts.join('~~')}`);
-            const payload = `${uniqueID}|MULTIUPDATE|${parts.join(';;')}`;
+// Format: usercode|MULTIUPDATE|resort1:lift1~~lift2~~lift3;;resort2:lift1~~lift2
+const parts = watchList.map(w => `${w.resortId}:${w.lifts.join('~~')}`);
+const payload = `${uniqueID}|MULTIUPDATE|${parts.join(';;')}`;
 
-            const btn = document.getElementById("saveBtn");
-            btn.innerText = "⏳ Saving...";
+const btn = document.getElementById("saveBtn");
+btn.innerText = "⏳ Saving...";
 
-            fetch(`https://ntfy.sh/${SERVER_LISTENER_TOPIC}`, {
-                method: 'POST',
-                body: payload,
-                headers: { "Title": "Config Update", "Priority": "1" }
-            }).then(() => {
-                const totalLifts = watchList.reduce((sum, w) => sum + w.lifts.length, 0);
-                alert(`✅ Saved!\n\nWatching ${watchList.length} resort${watchList.length !== 1 ? 's' : ''} and ${totalLifts} lifts.`);
-                btn.innerText = "💾 SAVE ALL";
-            }).catch(() => {
-                alert("❌ Network Error");
-                btn.innerText = "💾 SAVE ALL";
-            });
-        }
+fetch(`https://ntfy.sh/${SERVER_LISTENER_TOPIC}`, {
+method: 'POST',
+body: payload,
+headers: { "Title": "Config Update", "Priority": "1" }
+}).then(() => {
+const totalLifts = watchList.reduce((sum, w) => sum + w.lifts.length, 0);
+alert(`✅ Saved!\n\nWatching ${watchList.length} resort${watchList.length !== 1 ? 's' : ''} and ${totalLifts} lifts.`);
+btn.innerText = "💾 SAVE ALL";
+}).catch(() => {
+alert("❌ Network Error");
+btn.innerText = "💾 SAVE ALL";
+});
+}
 
-        function sendToCloud(payload) {
-            fetch(`https://ntfy.sh/${SERVER_LISTENER_TOPIC}`, {
-                method: 'POST',
-                body: payload,
-                headers: { "Title": "Config Update", "Priority": "1" }
-            }).catch(() => {});
-        }
+function sendToCloud(payload) {
+fetch(`https://ntfy.sh/${SERVER_LISTENER_TOPIC}`, {
+method: 'POST',
+body: payload,
+headers: { "Title": "Config Update", "Priority": "1" }
+}).catch(() => {});
+}
 
-        function changeCode() {
-            if (!confirm("Generate a new code?")) return;
-            const oldID = document.getElementById("userSkiID").innerText;
-            sendToCloud(`${oldID}|PAUSE|`);
-            const chars = 'abcdefghjkmnpqrstuvwxyz23456789';
-            let newID = '';
-            for (let i = 0; i < 5; i++) {
-                newID += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            localStorage.setItem("mySkiID", newID);
-            localStorage.removeItem("watchList");
-            watchList = [];
-            renderWatchList();
-            document.getElementById("userSkiID").innerText = newID;
-        }
+function changeCode() {
+if (!confirm("Generate a new code?")) return;
+const oldID = document.getElementById("userSkiID").innerText;
+sendToCloud(`${oldID}|PAUSE|`);
+const chars = 'abcdefghjkmnpqrstuvwxyz23456789';
+let newID = '';
+for (let i = 0; i < 5; i++) {
+newID += chars.charAt(Math.floor(Math.random() * chars.length));
+}
+localStorage.setItem("mySkiID", newID);
+localStorage.removeItem("watchList");
+watchList = [];
+renderWatchList();
+document.getElementById("userSkiID").innerText = newID;
+}
 
-        function sendInstantNotification() {
-            const uniqueID = document.getElementById("userSkiID").innerText;
-            sendToCloud(`${uniqueID}|REPORT|`);
-            alert("🚀 Request sent! Python is checking your saved lifts now...");
-        }
-    </script>
+function sendInstantNotification() {
+const uniqueID = document.getElementById("userSkiID").innerText;
+sendToCloud(`${uniqueID}|REPORT|`);
+alert("🚀 Request sent! Python is checking your saved lifts now...");
+}
+</script>
 </body>
 </html>
