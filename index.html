@@ -108,7 +108,7 @@
     <div class="card">
         <label class="input-label">🏔️ Watching</label>
         <div class="watch-list" id="watchList">
-            <div class="loading-text">Use the <b>Add Resort</b> button bellow to track your favorite lifts.</div>
+            <div class="loading-text">Use the <b>Add Resort</b> button bellow to track 1 or more resorts.</div>
         </div>
         <button class="add-resort-btn" onclick="toggleAddForm()">＋ Add Resort</button>
 
@@ -319,7 +319,7 @@
         function renderWatchList() {
             const container = document.getElementById("watchList");
             if (watchList.length === 0) {
-                container.innerHTML = '<div class="loading-text">No resorts added yet.</div>';
+                container.innerHTML = '<div class="loading-text">Use the <b>Add Resort</b> button bellow to track 1 or more resorts.</div>';
                 return;
             }
             container.innerHTML = watchList.map((w, i) => `
